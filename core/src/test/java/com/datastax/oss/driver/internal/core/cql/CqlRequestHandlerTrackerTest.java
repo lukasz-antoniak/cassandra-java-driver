@@ -18,9 +18,7 @@
 package com.datastax.oss.driver.internal.core.cql;
 
 import static com.datastax.oss.driver.Assertions.assertThatStage;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -72,7 +70,8 @@ public class CqlRequestHandlerTrackerTest extends CqlRequestHandlerTestBase {
                         anyLong(),
                         any(DriverExecutionProfile.class),
                         eq(node1),
-                        any(String.class));
+                        any(String.class),
+                        nullable(ExecutionInfo.class));
                 verify(requestTracker)
                     .onNodeSuccess(
                         eq(UNDEFINED_IDEMPOTENCE_STATEMENT),

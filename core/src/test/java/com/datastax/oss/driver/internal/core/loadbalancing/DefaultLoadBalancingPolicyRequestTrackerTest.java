@@ -135,7 +135,7 @@ public class DefaultLoadBalancingPolicyRequestTrackerTest extends LoadBalancingP
     Throwable iae = new IllegalArgumentException();
 
     // When
-    policy.onNodeError(request, iae, 0, profile, node1, logPrefix);
+    policy.onNodeError(request, iae, 0, profile, node1, logPrefix, executionInfo);
 
     // Then
     assertThat(policy.responseTimes)
@@ -154,7 +154,7 @@ public class DefaultLoadBalancingPolicyRequestTrackerTest extends LoadBalancingP
     Throwable iae = new IllegalArgumentException();
 
     // When
-    policy.onNodeError(request, iae, 0, profile, node1, logPrefix);
+    policy.onNodeError(request, iae, 0, profile, node1, logPrefix, executionInfo);
 
     // Then
     assertThat(policy.responseTimes)
@@ -179,8 +179,8 @@ public class DefaultLoadBalancingPolicyRequestTrackerTest extends LoadBalancingP
     Throwable iae = new IllegalArgumentException();
 
     // When
-    policy.onNodeError(request, iae, 0, profile, node1, logPrefix);
-    policy.onNodeError(request, iae, 0, profile, node2, logPrefix);
+    policy.onNodeError(request, iae, 0, profile, node1, logPrefix, executionInfo);
+    policy.onNodeError(request, iae, 0, profile, node2, logPrefix, executionInfo);
 
     // Then
     assertThat(policy.responseTimes)
