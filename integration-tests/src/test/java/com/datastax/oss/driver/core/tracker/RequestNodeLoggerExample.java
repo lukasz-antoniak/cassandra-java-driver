@@ -36,13 +36,13 @@ public class RequestNodeLoggerExample extends RequestLogger {
 
   @Override
   public void onNodeError(
-          @NonNull Request request,
-          @NonNull Throwable error,
-          long latencyNanos,
-          @NonNull DriverExecutionProfile executionProfile,
-          @NonNull Node node,
-          @NonNull String logPrefix,
-          @Nullable ExecutionInfo executionInfo) {
+      @NonNull Request request,
+      @NonNull Throwable error,
+      long latencyNanos,
+      @NonNull DriverExecutionProfile executionProfile,
+      @NonNull Node node,
+      @NonNull String logPrefix,
+      @Nullable ExecutionInfo executionInfo) {
     if (!executionProfile.getBoolean(DefaultDriverOption.REQUEST_LOGGER_ERROR_ENABLED)) {
       return;
     }
