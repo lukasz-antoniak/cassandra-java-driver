@@ -39,10 +39,17 @@ public class CustomCcmRule extends BaseCcmRule {
   @Override
   protected void before() {
     if (CURRENT.get() == null && CURRENT.compareAndSet(null, this)) {
-      super.before();
+      try {
+        super.before();
+      } catch (RuntimeException e) {
+        // initialization of cluster failed, let us clean it up before next test is executed
+        // JUnit ExternalResource will not attempt to call after() upon exception throw by before()
+        afterQuietly();
+        throw e;
+      }
     } else if (CURRENT.get() != this) {
       throw new IllegalStateException(
-          "Attempting to use a Ccm rule while another is in use.  This is disallowed");
+          "Attempting to use a Ccm rule while another is in use. This is disallowed");
     }
   }
 
@@ -50,6 +57,14 @@ public class CustomCcmRule extends BaseCcmRule {
   protected void after() {
     super.after();
     CURRENT.compareAndSet(this, null);
+  }
+
+  private void afterQuietly() {
+    try {
+      after();
+    } catch (RuntimeException e) {
+      // ignore
+    }
   }
 
   public CcmBridge getCcmBridge() {
