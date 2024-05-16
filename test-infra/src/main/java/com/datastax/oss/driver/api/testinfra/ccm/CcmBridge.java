@@ -57,6 +57,9 @@ public class CcmBridge implements AutoCloseable {
   public static final Version VERSION =
       Objects.requireNonNull(Version.parse(System.getProperty("ccm.version", "4.0.0")));
 
+  public static final Optional<String> JVM_VERSION =
+      Optional.ofNullable(System.getProperty("ccmJvm.version"));
+
   public static final String INSTALL_DIRECTORY = System.getProperty("ccm.directory");
 
   public static final String BRANCH = System.getProperty("ccm.branch");
@@ -199,7 +202,7 @@ public class CcmBridge implements AutoCloseable {
   private String getCcmVersionString(Version version) {
     // for 4.0 pre-releases, the CCM version string needs to be "4.0-alpha1" or "4.0-alpha2"
     // Version.toString() always adds a patch value, even if it's not specified when parsing.
-    if (version.getMajor() == 4
+    if ((version.getMajor() == 4 || version.getMajor() == 5)
         && version.getMinor() == 0
         && version.getPatch() == 0
         && version.getPreReleaseLabels() != null) {
@@ -292,8 +295,7 @@ public class CcmBridge implements AutoCloseable {
   public void start() {
     if (started.compareAndSet(false, true)) {
       List<String> cmdAndArgs = Lists.newArrayList("start", jvmArgs, "--wait-for-binary-proto");
-      overrideJvmVersionForDseWorkloads()
-          .ifPresent(jvmVersion -> cmdAndArgs.add(String.format("--jvm_version=%d", jvmVersion)));
+      updateJvmVersion(cmdAndArgs);
       try {
         execute(cmdAndArgs.toArray(new String[0]));
       } catch (RuntimeException re) {
@@ -324,9 +326,16 @@ public class CcmBridge implements AutoCloseable {
 
   public void start(int n) {
     List<String> cmdAndArgs = Lists.newArrayList("node" + n, "start");
-    overrideJvmVersionForDseWorkloads()
-        .ifPresent(jvmVersion -> cmdAndArgs.add(String.format("--jvm_version=%d", jvmVersion)));
+    updateJvmVersion(cmdAndArgs);
     execute(cmdAndArgs.toArray(new String[0]));
+  }
+
+  private void updateJvmVersion(List<String> cmdAndArgs) {
+    Optional<Integer> overrideJvmVersion = overrideJvmVersionForDseWorkloads();
+    if (overrideJvmVersion.isPresent()) {
+      overrideJvmVersion.ifPresent(
+          jvmVersion -> cmdAndArgs.add(String.format("--jvm_version=%d", jvmVersion)));
+    } else JVM_VERSION.ifPresent(s -> cmdAndArgs.add(String.format("--jvm_version=%s", s)));
   }
 
   public void stop(int n) {

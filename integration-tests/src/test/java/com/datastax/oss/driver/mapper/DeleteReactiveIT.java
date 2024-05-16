@@ -34,23 +34,27 @@ import com.datastax.oss.driver.api.mapper.annotations.Insert;
 import com.datastax.oss.driver.api.mapper.annotations.Mapper;
 import com.datastax.oss.driver.api.mapper.annotations.Select;
 import com.datastax.oss.driver.api.mapper.entity.saving.NullSavingStrategy;
-import com.datastax.oss.driver.api.testinfra.ccm.CcmRule;
+import com.datastax.oss.driver.api.testinfra.ccm.CustomCcmRule;
+import com.datastax.oss.driver.api.testinfra.requirement.BackendRequirement;
+import com.datastax.oss.driver.api.testinfra.requirement.BackendType;
 import com.datastax.oss.driver.api.testinfra.session.SessionRule;
-import com.datastax.oss.driver.categories.ParallelizableTests;
 import io.reactivex.Flowable;
 import java.util.UUID;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
 
-@Category(ParallelizableTests.class)
+// Do not run LWT tests in parallel because they may interfere. Tests operate on the same row.
+@BackendRequirement(
+    type = BackendType.CASSANDRA,
+    description = "SASI indexes broken in DSE. See InventoryITBase#BROKEN_SASI_VERSION.")
 public class DeleteReactiveIT extends InventoryITBase {
 
-  private static CcmRule ccmRule = CcmRule.getInstance();
+  private static CustomCcmRule ccmRule =
+      CustomCcmRule.builder().withCassandraConfiguration("enable_sasi_indexes", "true").build();
 
   private static SessionRule<CqlSession> sessionRule = SessionRule.builder(ccmRule).build();
 
