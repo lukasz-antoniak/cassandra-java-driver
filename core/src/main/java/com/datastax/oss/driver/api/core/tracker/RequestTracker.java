@@ -182,4 +182,31 @@ public interface RequestTracker extends AutoCloseable {
    * <p>The default implementation is empty.
    */
   default void onSessionReady(@NonNull Session session) {}
+
+  /**
+   * Invoked each time new request is created.
+   *
+   * @param request the request to be executed
+   * @param executionProfile the execution profile of this request
+   * @param requestLogPrefix the dedicated log prefix for this request
+   */
+  default void onRequestStart(
+      @NonNull Request request,
+      @NonNull DriverExecutionProfile executionProfile,
+      @NonNull String requestLogPrefix) {}
+
+  /**
+   * Invoked each time a new request is created and sent to next node. Due to retry policy, this
+   * method can be triggered multiple times while processing one logical request.
+   *
+   * @param request the request to be executed
+   * @param executionProfile the execution profile of this request
+   * @param node the node which will receive the request
+   * @param requestLogPrefix the dedicated log prefix for this request
+   */
+  default void onRequestNodeStart(
+      @NonNull Request request,
+      @NonNull DriverExecutionProfile executionProfile,
+      @NonNull Node node,
+      @NonNull String requestLogPrefix) {}
 }
