@@ -57,10 +57,6 @@ public class CcmBridge implements AutoCloseable {
   public static final Version VERSION =
       Objects.requireNonNull(Version.parse(System.getProperty("ccm.version", "4.0.0")));
 
-  /** Allows to override JVM version used by CCM to start C* cluster. */
-  public static final Optional<String> JVM_VERSION =
-      Optional.ofNullable(System.getProperty("ccmJvm.version"));
-
   public static final String INSTALL_DIRECTORY = System.getProperty("ccm.directory");
 
   public static final String BRANCH = System.getProperty("ccm.branch");
@@ -332,11 +328,8 @@ public class CcmBridge implements AutoCloseable {
   }
 
   private void updateJvmVersion(List<String> cmdAndArgs) {
-    Optional<Integer> overrideJvmVersion = overrideJvmVersionForDseWorkloads();
-    if (overrideJvmVersion.isPresent()) {
-      overrideJvmVersion.ifPresent(
-          jvmVersion -> cmdAndArgs.add(String.format("--jvm_version=%d", jvmVersion)));
-    } else JVM_VERSION.ifPresent(s -> cmdAndArgs.add(String.format("--jvm_version=%s", s)));
+    overrideJvmVersionForDseWorkloads()
+        .ifPresent(jvmVersion -> cmdAndArgs.add(String.format("--jvm_version=%d", jvmVersion)));
   }
 
   public void stop(int n) {
