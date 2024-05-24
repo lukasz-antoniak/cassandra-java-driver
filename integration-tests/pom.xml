@@ -242,6 +242,8 @@
               <threadCountClasses>8</threadCountClasses>
               <summaryFile>${project.build.directory}/failsafe-reports/failsafe-summary-parallelized.xml</summaryFile>
               <skipITs>${skipParallelizableITs}</skipITs>
+              <argLine>${blockhound.argline}</argLine>
+              <jvm>${testing.jvm}/bin/java</jvm>
             </configuration>
           </execution>
           <execution>
