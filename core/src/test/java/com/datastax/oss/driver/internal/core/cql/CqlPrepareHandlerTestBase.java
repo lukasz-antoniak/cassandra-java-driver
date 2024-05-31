@@ -17,6 +17,8 @@
  */
 package com.datastax.oss.driver.internal.core.cql;
 
+import static com.datastax.oss.driver.Assertions.assertThat;
+
 import com.datastax.oss.driver.api.core.cql.ColumnDefinitions;
 import com.datastax.oss.driver.api.core.cql.PreparedStatement;
 import com.datastax.oss.driver.api.core.metadata.Node;
@@ -29,14 +31,11 @@ import com.datastax.oss.protocol.internal.response.result.Prepared;
 import com.datastax.oss.protocol.internal.response.result.RawType;
 import com.datastax.oss.protocol.internal.response.result.RowsMetadata;
 import com.datastax.oss.protocol.internal.util.Bytes;
+import java.nio.ByteBuffer;
+import java.util.Map;
 import org.junit.Before;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import java.nio.ByteBuffer;
-import java.util.Map;
-
-import static com.datastax.oss.driver.Assertions.assertThat;
 
 public abstract class CqlPrepareHandlerTestBase {
 

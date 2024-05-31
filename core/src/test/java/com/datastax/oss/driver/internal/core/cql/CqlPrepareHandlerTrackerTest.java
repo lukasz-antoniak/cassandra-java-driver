@@ -17,6 +17,17 @@
  */
 package com.datastax.oss.driver.internal.core.cql;
 
+import static com.datastax.oss.driver.Assertions.assertThatStage;
+import static com.datastax.oss.driver.internal.core.cql.CqlRequestHandlerTestBase.defaultFrameOf;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+
 import com.datastax.oss.driver.api.core.config.DriverExecutionProfile;
 import com.datastax.oss.driver.api.core.cql.PreparedStatement;
 import com.datastax.oss.driver.api.core.servererrors.BootstrappingException;
@@ -24,13 +35,8 @@ import com.datastax.oss.driver.api.core.tracker.RequestTracker;
 import com.datastax.oss.driver.internal.core.tracker.NoopRequestTracker;
 import com.datastax.oss.protocol.internal.ProtocolConstants;
 import com.datastax.oss.protocol.internal.response.Error;
-import org.junit.Test;
-
 import java.util.concurrent.CompletionStage;
-
-import static com.datastax.oss.driver.Assertions.assertThatStage;
-import static com.datastax.oss.driver.internal.core.cql.CqlRequestHandlerTestBase.defaultFrameOf;
-import static org.mockito.Mockito.*;
+import org.junit.Test;
 
 public class CqlPrepareHandlerTrackerTest extends CqlPrepareHandlerTestBase {
 
@@ -50,11 +56,7 @@ public class CqlPrepareHandlerTrackerTest extends CqlPrepareHandlerTestBase {
       when(harness.getContext().getRequestTracker()).thenReturn(requestTracker);
 
       CompletionStage<PreparedStatement> resultSetFuture =
-          new CqlPrepareHandler(
-                  PREPARE_REQUEST,
-                  harness.getSession(),
-                  harness.getContext(),
-                  "test")
+          new CqlPrepareHandler(PREPARE_REQUEST, harness.getSession(), harness.getContext(), "test")
               .handle();
 
       assertThatStage(resultSetFuture)
@@ -62,9 +64,7 @@ public class CqlPrepareHandlerTrackerTest extends CqlPrepareHandlerTestBase {
               resultSet -> {
                 verify(requestTracker)
                     .onRequestStart(
-                        eq(PREPARE_REQUEST),
-                        any(DriverExecutionProfile.class),
-                        any(String.class));
+                        eq(PREPARE_REQUEST), any(DriverExecutionProfile.class), any(String.class));
                 verify(requestTracker)
                     .onRequestNodeStart(
                         eq(PREPARE_REQUEST),
@@ -120,11 +120,7 @@ public class CqlPrepareHandlerTrackerTest extends CqlPrepareHandlerTestBase {
       when(harness.getContext().getRequestTracker()).thenReturn(requestTracker);
 
       CompletionStage<PreparedStatement> resultSetFuture =
-          new CqlPrepareHandler(
-                  PREPARE_REQUEST,
-                  harness.getSession(),
-                  harness.getContext(),
-                  "test")
+          new CqlPrepareHandler(PREPARE_REQUEST, harness.getSession(), harness.getContext(), "test")
               .handle();
 
       assertThatStage(resultSetFuture)

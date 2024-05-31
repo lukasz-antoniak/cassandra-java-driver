@@ -615,7 +615,7 @@ public class CqlRequestHandler implements Throttled {
       NodeMetricUpdater nodeMetricUpdater = ((DefaultNode) node).getMetricUpdater();
       if (nodeMetricUpdater.isEnabled(DefaultNodeMetric.CQL_MESSAGES, executionProfile.getName())) {
         nodeResponseTimeNanos = System.nanoTime();
-        long nodeLatency = System.nanoTime() - nodeStartTimeNanos;
+        long nodeLatency = nodeResponseTimeNanos - nodeStartTimeNanos;
         nodeMetricUpdater.updateTimer(
             DefaultNodeMetric.CQL_MESSAGES,
             executionProfile.getName(),
@@ -667,7 +667,7 @@ public class CqlRequestHandler implements Throttled {
               node,
               new IllegalStateException("Unexpected response " + responseMessage),
               nodeStartTimeNanos,
-              NANOTIME_NOT_MEASURED_YET);
+              nodeResponseTimeNanos);
           setFinalError(
               statement,
               new IllegalStateException("Unexpected response " + responseMessage),
@@ -676,7 +676,7 @@ public class CqlRequestHandler implements Throttled {
         }
       } catch (Throwable t) {
         trackNodeEnd(
-            statement, executionProfile, node, t, nodeStartTimeNanos, NANOTIME_NOT_MEASURED_YET);
+            statement, executionProfile, node, t, nodeStartTimeNanos, nodeResponseTimeNanos);
         setFinalError(statement, t, node, execution);
       }
     }
@@ -709,10 +709,17 @@ public class CqlRequestHandler implements Throttled {
                 logPrefix);
         PrepareRequest reprepareRequest = Conversions.toPrepareRequest(reprepareMessage);
         long reprepareStartNanos = System.nanoTime();
-        trackStart(
-            reprepareRequest,
+        // TODO: Is this the correct execution profile?
+        // TODO: Shall we have different logPrefix?
+        trackNodeEnd(
+            statement,
             executionProfile,
-            logPrefix); // TODO: Is this the correct execution profile?
+            node,
+            new IllegalStateException("Unexpected response " + errorMessage),
+            nodeStartTimeNanos,
+            reprepareStartNanos);
+        trackStart(reprepareRequest, executionProfile, logPrefix);
+        trackNodeStart(reprepareRequest, executionProfile, node);
         reprepareHandler
             .start()
             .handle(
@@ -820,22 +827,6 @@ public class CqlRequestHandler implements Throttled {
                                       + "the statement was prepared.",
                                   Bytes.toHexString(idToReprepare),
                                   Bytes.toHexString(repreparedId)));
-                      // notify statement preparation as successful
-                      long endTimeNanos =
-                          trackNodeEnd(
-                              reprepareRequest,
-                              executionProfile,
-                              node,
-                              null,
-                              reprepareStartNanos,
-                              NANOTIME_NOT_MEASURED_YET);
-                      trackEnd(
-                          reprepareRequest,
-                          executionProfile,
-                          node,
-                          null,
-                          reprepareStartNanos,
-                          endTimeNanos);
                       // notify error in initial statement execution
                       trackNodeEnd(
                           statement,
@@ -843,10 +834,26 @@ public class CqlRequestHandler implements Throttled {
                           node,
                           illegalStateException,
                           nodeStartTimeNanos,
-                          endTimeNanos);
+                          NANOTIME_NOT_MEASURED_YET);
                       setFinalError(statement, illegalStateException, node, execution);
                     }
                     LOG.trace("[{}] Reprepare successful, retrying", logPrefix);
+                    // notify statement preparation as successful
+                    long endTimeNanos =
+                        trackNodeEnd(
+                            reprepareRequest,
+                            executionProfile,
+                            node,
+                            null,
+                            reprepareStartNanos,
+                            NANOTIME_NOT_MEASURED_YET);
+                    trackEnd(
+                        reprepareRequest,
+                        executionProfile,
+                        node,
+                        null,
+                        reprepareStartNanos,
+                        endTimeNanos);
                     // do not report to onRequestStart(), because we already did during first
                     // attempt
                     sendRequest(statement, node, queryPlan, execution, retryCount, false);

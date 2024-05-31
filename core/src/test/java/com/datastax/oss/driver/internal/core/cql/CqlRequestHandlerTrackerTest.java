@@ -18,10 +18,12 @@
 package com.datastax.oss.driver.internal.core.cql;
 
 import static com.datastax.oss.driver.Assertions.assertThatStage;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockingDetails;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -29,13 +31,28 @@ import static org.mockito.Mockito.when;
 
 import com.datastax.oss.driver.api.core.config.DriverExecutionProfile;
 import com.datastax.oss.driver.api.core.cql.AsyncResultSet;
+import com.datastax.oss.driver.api.core.cql.BoundStatement;
+import com.datastax.oss.driver.api.core.cql.ColumnDefinitions;
+import com.datastax.oss.driver.api.core.cql.PreparedStatement;
+import com.datastax.oss.driver.api.core.cql.Statement;
 import com.datastax.oss.driver.api.core.servererrors.BootstrappingException;
 import com.datastax.oss.driver.api.core.tracker.RequestTracker;
+import com.datastax.oss.driver.internal.core.session.RepreparePayload;
 import com.datastax.oss.driver.internal.core.tracker.NoopRequestTracker;
 import com.datastax.oss.protocol.internal.ProtocolConstants;
+import com.datastax.oss.protocol.internal.request.Prepare;
 import com.datastax.oss.protocol.internal.response.Error;
+import com.datastax.oss.protocol.internal.response.error.Unprepared;
+import com.datastax.oss.protocol.internal.response.result.Prepared;
+import com.datastax.oss.protocol.internal.util.Bytes;
+import java.nio.ByteBuffer;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import org.junit.Test;
+import org.mockito.invocation.Invocation;
 
 public class CqlRequestHandlerTrackerTest extends CqlRequestHandlerTestBase {
 
@@ -135,5 +152,83 @@ public class CqlRequestHandlerTrackerTest extends CqlRequestHandlerTestBase {
       assertThatStage(resultSetFuture)
           .isSuccess(resultSet -> verifyNoMoreInteractions(requestTracker));
     }
+  }
+
+  @Test
+  public void should_invoke_implicit_prepare_request_tracker() {
+    ByteBuffer mockId = Bytes.fromHexString("0xffff");
+
+    PreparedStatement preparedStatement = mock(PreparedStatement.class);
+    when(preparedStatement.getId()).thenReturn(mockId);
+    ColumnDefinitions columnDefinitions = mock(ColumnDefinitions.class);
+    when(columnDefinitions.size()).thenReturn(0);
+    when(preparedStatement.getResultSetDefinitions()).thenReturn(columnDefinitions);
+    BoundStatement boundStatement = mock(BoundStatement.class);
+    when(boundStatement.getPreparedStatement()).thenReturn(preparedStatement);
+    when(boundStatement.getValues()).thenReturn(Collections.emptyList());
+    when(boundStatement.getNowInSeconds()).thenReturn(Statement.NO_NOW_IN_SECONDS);
+
+    RequestHandlerTestHarness.Builder harnessBuilder = RequestHandlerTestHarness.builder();
+    // For the first attempt that gets the UNPREPARED response
+    PoolBehavior node1Behavior = harnessBuilder.customBehavior(node1);
+    // For the second attempt that succeeds
+    harnessBuilder.withResponse(node1, defaultFrameOf(singleRow()));
+
+    try (RequestHandlerTestHarness harness = harnessBuilder.build()) {
+      RequestTracker requestTracker = mock(RequestTracker.class);
+      when(harness.getContext().getRequestTracker()).thenReturn(requestTracker);
+
+      // The handler will look for the info to reprepare in the session's cache, put it there
+      ConcurrentMap<ByteBuffer, RepreparePayload> repreparePayloads = new ConcurrentHashMap<>();
+      repreparePayloads.put(
+          mockId, new RepreparePayload(mockId, "mock query", null, Collections.emptyMap()));
+      when(harness.getSession().getRepreparePayloads()).thenReturn(repreparePayloads);
+
+      CompletionStage<AsyncResultSet> resultSetFuture =
+          new CqlRequestHandler(
+                  UNDEFINED_IDEMPOTENCE_STATEMENT,
+                  harness.getSession(),
+                  harness.getContext(),
+                  "test")
+              .handle();
+
+      // Before we proceed, mock the PREPARE exchange that will occur as soon as we complete the
+      // first response.
+      node1Behavior.mockFollowupRequest(
+          Prepare.class, defaultFrameOf(new Prepared(Bytes.getArray(mockId), null, null, null)));
+
+      node1Behavior.setWriteSuccess();
+      node1Behavior.setResponseSuccess(
+          defaultFrameOf(new Unprepared("mock message", Bytes.getArray(mockId))));
+
+      assertThatStage(resultSetFuture)
+          .isSuccess(
+              resultSet -> {
+                List<Invocation> invocations =
+                    (List<Invocation>) mockingDetails(requestTracker).getInvocations();
+                assertThat(invocations).hasSize(10);
+                // start processing CQL statement
+                checkInvocation(invocations.get(0), "onRequestStart", DefaultSimpleStatement.class);
+                checkInvocation(
+                    invocations.get(1), "onRequestNodeStart", DefaultSimpleStatement.class);
+                checkInvocation(invocations.get(2), "onNodeError", DefaultSimpleStatement.class);
+                // implicit reprepare statement
+                checkInvocation(invocations.get(3), "onRequestStart", DefaultPrepareRequest.class);
+                checkInvocation(
+                    invocations.get(4), "onRequestNodeStart", DefaultPrepareRequest.class);
+                checkInvocation(invocations.get(5), "onNodeSuccess", DefaultPrepareRequest.class);
+                checkInvocation(invocations.get(6), "onSuccess", DefaultPrepareRequest.class);
+                // send new statement and process it
+                checkInvocation(
+                    invocations.get(7), "onRequestNodeStart", DefaultSimpleStatement.class);
+                checkInvocation(invocations.get(8), "onNodeSuccess", DefaultSimpleStatement.class);
+                checkInvocation(invocations.get(9), "onSuccess", DefaultSimpleStatement.class);
+              });
+    }
+  }
+
+  private void checkInvocation(Invocation invocation, String methodName, Class<?> firstParameter) {
+    assertThat(invocation.getMethod().getName()).isEqualTo(methodName);
+    assertThat(invocation.getArguments()[0]).isInstanceOf(firstParameter);
   }
 }
