@@ -399,7 +399,7 @@ public class CqlPrepareHandler implements Throttled {
         Message responseMessage = responseFrame.message;
         if (responseMessage instanceof Prepared) {
           LOG.trace("[{}] Got result, completing", logPrefix);
-          setFinalResult(request, (Prepared) responseMessage, initialCallback);
+          setFinalResult(request, (Prepared) responseMessage, this);
         } else if (responseMessage instanceof Error) {
           LOG.trace("[{}] Got error response, processing", logPrefix);
           processErrorResponse((Error) responseMessage);
