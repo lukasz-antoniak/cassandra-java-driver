@@ -331,15 +331,7 @@ public class CqlRequestHandler implements Throttled {
         cancelScheduledTasks();
         throttler.signalSuccess(this);
 
-        long endTimeNanos =
-            trackNodeEnd(
-                callback.statement,
-                callback.executionProfile,
-                callback.node,
-                null,
-                callback.nodeStartTimeNanos,
-                NANOTIME_NOT_MEASURED_YET,
-                logPrefix);
+        long endTimeNanos = trackNodeEnd(callback, null, NANOTIME_NOT_MEASURED_YET, logPrefix);
         trackEnd(callback.node, null, endTimeNanos);
         if (sessionMetricUpdater.isEnabled(
             DefaultSessionMetric.CQL_REQUESTS, callback.executionProfile.getName())) {
@@ -506,14 +498,7 @@ public class CqlRequestHandler implements Throttled {
         Throwable error = future.cause();
         if (error instanceof EncoderException
             && error.getCause() instanceof FrameTooLongException) {
-          trackNodeEnd(
-              statement,
-              executionProfile,
-              node,
-              error.getCause(),
-              nodeStartTimeNanos,
-              NANOTIME_NOT_MEASURED_YET,
-              logPrefix);
+          trackNodeEnd(this, error.getCause(), NANOTIME_NOT_MEASURED_YET, logPrefix);
           setFinalError(statement, error.getCause(), node, execution);
         } else {
           LOG.trace(
@@ -522,14 +507,7 @@ public class CqlRequestHandler implements Throttled {
               channel,
               error);
           recordError(node, error);
-          trackNodeEnd(
-              statement,
-              executionProfile,
-              node,
-              error,
-              nodeStartTimeNanos,
-              NANOTIME_NOT_MEASURED_YET,
-              logPrefix);
+          trackNodeEnd(this, error, NANOTIME_NOT_MEASURED_YET, logPrefix);
           ((DefaultNode) node)
               .getMetricUpdater()
               .incrementCounter(DefaultNodeMetric.UNSENT_REQUESTS, executionProfile.getName());
@@ -664,29 +642,13 @@ public class CqlRequestHandler implements Throttled {
           LOG.trace("[{}] Got error response, processing", logPrefix);
           processErrorResponse((Error) responseMessage);
         } else {
-          trackNodeEnd(
-              statement,
-              executionProfile,
-              node,
-              new IllegalStateException("Unexpected response " + responseMessage),
-              nodeStartTimeNanos,
-              nodeResponseTimeNanos,
-              logPrefix);
-          setFinalError(
-              statement,
-              new IllegalStateException("Unexpected response " + responseMessage),
-              node,
-              execution);
+          IllegalStateException error =
+              new IllegalStateException("Unexpected response " + responseMessage);
+          trackNodeEnd(this, error, nodeResponseTimeNanos, logPrefix);
+          setFinalError(statement, error, node, execution);
         }
       } catch (Throwable t) {
-        trackNodeEnd(
-            statement,
-            executionProfile,
-            node,
-            t,
-            nodeStartTimeNanos,
-            nodeResponseTimeNanos,
-            logPrefix);
+        trackNodeEnd(this, t, nodeResponseTimeNanos, logPrefix);
         setFinalError(statement, t, node, execution);
       }
     }
@@ -722,11 +684,8 @@ public class CqlRequestHandler implements Throttled {
         // TODO: Is this the correct execution profile?
         // TODO: Shall we have different logPrefix?
         trackNodeEnd(
-            statement,
-            executionProfile,
-            node,
+            this,
             new IllegalStateException("Unexpected response " + errorMessage),
-            nodeStartTimeNanos,
             reprepareStartNanos,
             logPrefix);
         trackStart(reprepareRequest, executionProfile, logPrefix);
@@ -749,29 +708,13 @@ public class CqlRequestHandler implements Throttled {
                           LOG.trace("[{}] Unrecoverable error on reprepare, rethrowing", logPrefix);
                           // TODO: What is the execution profile of reprepare statement?
                           long endTimeNanos =
-                              trackNodeEnd(
+                              trackReprepareStatementEnd(
                                   reprepareRequest,
-                                  executionProfile,
-                                  node,
+                                  this,
                                   prepareError,
                                   reprepareStartNanos,
-                                  NANOTIME_NOT_MEASURED_YET,
                                   logPrefix);
-                          trackEnd(
-                              reprepareRequest,
-                              executionProfile,
-                              node,
-                              prepareError,
-                              reprepareStartNanos,
-                              endTimeNanos);
-                          trackNodeEnd(
-                              statement,
-                              executionProfile,
-                              node,
-                              prepareError,
-                              nodeStartTimeNanos,
-                              endTimeNanos,
-                              logPrefix);
+                          trackNodeEnd(this, prepareError, endTimeNanos, logPrefix);
                           setFinalError(statement, prepareError, node, execution);
                           return null;
                         }
@@ -779,57 +722,17 @@ public class CqlRequestHandler implements Throttled {
                     } else if (exception instanceof RequestThrottlingException) {
                       // TODO: What is the execution profile of reprepare statement?
                       long endTimeNanos =
-                          trackNodeEnd(
-                              reprepareRequest,
-                              executionProfile,
-                              node,
-                              exception,
-                              reprepareStartNanos,
-                              NANOTIME_NOT_MEASURED_YET,
-                              logPrefix);
-                      trackEnd(
-                          reprepareRequest,
-                          executionProfile,
-                          node,
-                          exception,
-                          reprepareStartNanos,
-                          endTimeNanos);
-                      trackNodeEnd(
-                          statement,
-                          executionProfile,
-                          node,
-                          exception,
-                          nodeStartTimeNanos,
-                          endTimeNanos,
-                          logPrefix);
+                          trackReprepareStatementEnd(
+                              reprepareRequest, this, exception, reprepareStartNanos, logPrefix);
+                      trackNodeEnd(this, exception, endTimeNanos, logPrefix);
                       setFinalError(statement, exception, node, execution);
                       return null;
                     }
                     recordError(node, exception);
                     long endTimeNanos =
-                        trackNodeEnd(
-                            reprepareRequest,
-                            executionProfile,
-                            node,
-                            exception,
-                            reprepareStartNanos,
-                            NANOTIME_NOT_MEASURED_YET,
-                            logPrefix);
-                    trackEnd(
-                        reprepareRequest,
-                        executionProfile,
-                        node,
-                        exception,
-                        reprepareStartNanos,
-                        endTimeNanos);
-                    trackNodeEnd(
-                        statement,
-                        executionProfile,
-                        node,
-                        exception,
-                        nodeStartTimeNanos,
-                        endTimeNanos,
-                        logPrefix);
+                        trackReprepareStatementEnd(
+                            reprepareRequest, this, exception, reprepareStartNanos, logPrefix);
+                    trackNodeEnd(this, exception, endTimeNanos, logPrefix);
                     setFinalError(statement, exception, node, execution);
                     LOG.trace("[{}] Reprepare failed, trying next node", logPrefix);
                     sendRequest(statement, null, queryPlan, execution, retryCount, false);
@@ -846,33 +749,13 @@ public class CqlRequestHandler implements Throttled {
                                   Bytes.toHexString(repreparedId)));
                       // notify error in initial statement execution
                       trackNodeEnd(
-                          statement,
-                          executionProfile,
-                          node,
-                          illegalStateException,
-                          nodeStartTimeNanos,
-                          NANOTIME_NOT_MEASURED_YET,
-                          logPrefix);
+                          this, illegalStateException, NANOTIME_NOT_MEASURED_YET, logPrefix);
                       setFinalError(statement, illegalStateException, node, execution);
                     }
                     LOG.trace("[{}] Reprepare successful, retrying", logPrefix);
                     // notify statement preparation as successful
-                    long endTimeNanos =
-                        trackNodeEnd(
-                            reprepareRequest,
-                            executionProfile,
-                            node,
-                            null,
-                            reprepareStartNanos,
-                            NANOTIME_NOT_MEASURED_YET,
-                            logPrefix);
-                    trackEnd(
-                        reprepareRequest,
-                        executionProfile,
-                        node,
-                        null,
-                        reprepareStartNanos,
-                        endTimeNanos);
+                    trackReprepareStatementEnd(
+                        reprepareRequest, this, null, reprepareStartNanos, logPrefix);
                     // do not report to onRequestStart(), because we already did during first
                     // attempt
                     sendRequest(statement, node, queryPlan, execution, retryCount, false);
@@ -886,28 +769,14 @@ public class CqlRequestHandler implements Throttled {
       if (error instanceof BootstrappingException) {
         LOG.trace("[{}] {} is bootstrapping, trying next node", logPrefix, node);
         recordError(node, error);
-        trackNodeEnd(
-            statement,
-            executionProfile,
-            node,
-            error,
-            nodeStartTimeNanos,
-            NANOTIME_NOT_MEASURED_YET,
-            logPrefix);
+        trackNodeEnd(this, error, NANOTIME_NOT_MEASURED_YET, logPrefix);
         sendRequest(statement, null, queryPlan, execution, retryCount, false);
       } else if (error instanceof QueryValidationException
           || error instanceof FunctionFailureException
           || error instanceof ProtocolError) {
         LOG.trace("[{}] Unrecoverable error, rethrowing", logPrefix);
         metricUpdater.incrementCounter(DefaultNodeMetric.OTHER_ERRORS, executionProfile.getName());
-        trackNodeEnd(
-            statement,
-            executionProfile,
-            node,
-            error,
-            nodeStartTimeNanos,
-            NANOTIME_NOT_MEASURED_YET,
-            logPrefix);
+        trackNodeEnd(this, error, NANOTIME_NOT_MEASURED_YET, logPrefix);
         setFinalError(statement, error, node, execution);
       } else {
         RetryPolicy retryPolicy = Conversions.resolveRetryPolicy(statement, context);
@@ -982,14 +851,7 @@ public class CqlRequestHandler implements Throttled {
       switch (verdict.getRetryDecision()) {
         case RETRY_SAME:
           recordError(node, error);
-          trackNodeEnd(
-              statement,
-              executionProfile,
-              node,
-              error,
-              nodeStartTimeNanos,
-              NANOTIME_NOT_MEASURED_YET,
-              logPrefix);
+          trackNodeEnd(this, error, NANOTIME_NOT_MEASURED_YET, logPrefix);
           sendRequest(
               verdict.getRetryRequest(statement),
               node,
@@ -1000,14 +862,7 @@ public class CqlRequestHandler implements Throttled {
           break;
         case RETRY_NEXT:
           recordError(node, error);
-          trackNodeEnd(
-              statement,
-              executionProfile,
-              node,
-              error,
-              nodeStartTimeNanos,
-              NANOTIME_NOT_MEASURED_YET,
-              logPrefix);
+          trackNodeEnd(this, error, NANOTIME_NOT_MEASURED_YET, logPrefix);
           sendRequest(
               verdict.getRetryRequest(statement),
               null,
@@ -1017,14 +872,7 @@ public class CqlRequestHandler implements Throttled {
               false);
           break;
         case RETHROW:
-          trackNodeEnd(
-              statement,
-              executionProfile,
-              node,
-              error,
-              nodeStartTimeNanos,
-              NANOTIME_NOT_MEASURED_YET,
-              logPrefix);
+          trackNodeEnd(this, error, NANOTIME_NOT_MEASURED_YET, logPrefix);
           setFinalError(statement, error, node, execution);
           break;
         case IGNORE:
@@ -1104,6 +952,7 @@ public class CqlRequestHandler implements Throttled {
     }
   }
 
+  /** Notify request tracker that processing of initial statement starts. */
   private void trackStart() {
     // TODO: Move execution profile calculation to constructor.
     DriverExecutionProfile executionProfile =
@@ -1111,6 +960,7 @@ public class CqlRequestHandler implements Throttled {
     trackStart(initialStatement, executionProfile, logPrefix);
   }
 
+  /** Notify request tracker that processing of given statement starts. */
   private void trackStart(
       Request request, DriverExecutionProfile executionProfile, String logPrefix) {
     if (requestTracker instanceof NoopRequestTracker) {
@@ -1119,6 +969,7 @@ public class CqlRequestHandler implements Throttled {
     requestTracker.onRequestStart(request, executionProfile, logPrefix);
   }
 
+  /** Notify request tracker that processing of given statement starts at a certain node. */
   private void trackNodeStart(
       Request request, DriverExecutionProfile executionProfile, Node node, String logPrefix) {
     if (requestTracker instanceof NoopRequestTracker) {
@@ -1127,6 +978,12 @@ public class CqlRequestHandler implements Throttled {
     requestTracker.onRequestNodeStart(request, executionProfile, node, logPrefix);
   }
 
+  /**
+   * Notify request tracker that processing of statement has been completed by a given node. To
+   * minimalize number of calls to {@code System#nanoTime()} caller may pass end timestamp. If
+   * passed timestamp equals {@code NANOTIME_NOT_MEASURED_YET}, method returns current end timestamp
+   * for further reuse.
+   */
   private long trackNodeEnd(
       Request request,
       DriverExecutionProfile executionProfile,
@@ -1148,6 +1005,47 @@ public class CqlRequestHandler implements Throttled {
     return endTimeNanos;
   }
 
+  /** Utility method to triggered request tracker based on {@code NodeResponseCallback}. */
+  private long trackNodeEnd(
+      NodeResponseCallback callback, Throwable error, long endTimeNanos, String logPrefix) {
+    return trackNodeEnd(
+        callback.statement,
+        callback.executionProfile,
+        callback.node,
+        error,
+        callback.nodeStartTimeNanos,
+        endTimeNanos,
+        logPrefix);
+  }
+
+  /**
+   * Utility method to notify request tracker about completed execution of re-prepating prepared
+   * statement.
+   */
+  private long trackReprepareStatementEnd(
+      Request statement,
+      NodeResponseCallback callback,
+      Throwable error,
+      long startTimeNanos,
+      String logPrefix) {
+    long endTimeNanos =
+        trackNodeEnd(
+            statement,
+            callback.executionProfile,
+            callback.node,
+            error,
+            startTimeNanos,
+            NANOTIME_NOT_MEASURED_YET,
+            logPrefix);
+    trackEnd(
+        statement, callback.executionProfile, callback.node, error, startTimeNanos, endTimeNanos);
+    return endTimeNanos;
+  }
+
+  /**
+   * Notify request tracker that processing of initial statement has been completed (successfully or
+   * with error).
+   */
   private void trackEnd(Node node, Throwable error, long endTimeNanos) {
     // TODO: Move execution profile calculation to constructor.
     DriverExecutionProfile executionProfile =
@@ -1155,6 +1053,10 @@ public class CqlRequestHandler implements Throttled {
     trackEnd(initialStatement, executionProfile, node, error, startTimeNanos, endTimeNanos);
   }
 
+  /**
+   * Notify request tracker that processing of given statement has been completed (successfully or
+   * with error).
+   */
   private void trackEnd(
       Request request,
       DriverExecutionProfile executionProfile,

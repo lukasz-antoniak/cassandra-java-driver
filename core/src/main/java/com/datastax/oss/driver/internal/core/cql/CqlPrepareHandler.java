@@ -508,6 +508,7 @@ public class CqlPrepareHandler implements Throttled {
     }
   }
 
+  /** Notify request tracker that processing of initial statement starts. */
   private void trackStart() {
     if (requestTracker instanceof NoopRequestTracker) {
       return;
@@ -515,6 +516,10 @@ public class CqlPrepareHandler implements Throttled {
     requestTracker.onRequestStart(initialRequest, executionProfile, logPrefix);
   }
 
+  /**
+   * Notify request tracker that processing of statement starts at a given node. Statement is passed
+   * as a separate parameter, because it might have been changed by custom retry policy.
+   */
   private void trackNodeStart(Request request, Node node) {
     if (requestTracker instanceof NoopRequestTracker) {
       return;
@@ -522,6 +527,7 @@ public class CqlPrepareHandler implements Throttled {
     requestTracker.onRequestNodeStart(request, executionProfile, node, logPrefix);
   }
 
+  /** Notify request tracker that processing of statement has been completed by a given node. */
   private void trackNodeEnd(Request request, Node node, Throwable error, long startTimeNanos) {
     if (requestTracker instanceof NoopRequestTracker) {
       return;
@@ -534,6 +540,10 @@ public class CqlPrepareHandler implements Throttled {
     }
   }
 
+  /**
+   * Notify request tracker that processing of initial statement has been completed (successfully or
+   * with error).
+   */
   private void trackEnd(Node node, Throwable error) {
     if (requestTracker instanceof NoopRequestTracker) {
       return;
