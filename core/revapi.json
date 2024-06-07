@@ -6956,6 +6956,16 @@
         "old": "method java.lang.Throwable java.lang.Throwable::fillInStackTrace() @ com.fasterxml.jackson.databind.deser.UnresolvedForwardReference",
         "new": "method com.fasterxml.jackson.databind.deser.UnresolvedForwardReference com.fasterxml.jackson.databind.deser.UnresolvedForwardReference::fillInStackTrace()",
         "justification": "Upgrade jackson-databind to 2.13.4.1 to address CVEs, API change cause: https://github.com/FasterXML/jackson-databind/issues/3419"
+      },
+      {
+        "code": "java.method.addedToInterface",
+        "new": "method com.datastax.oss.driver.api.core.config.DriverExecutionProfile com.datastax.dse.driver.api.core.graph.GraphExecutionInfo::getExecutionProfile()",
+        "justification": "Execution profile is frequently passed together with ExecutionInfo, so to improve API clarity it can be included inside the object. Part of refactoring to add ExecutionInfo object to RequestTracker callbacks."
+      },
+      {
+        "code": "java.method.addedToInterface",
+        "new": "method com.datastax.oss.driver.api.core.config.DriverExecutionProfile com.datastax.oss.driver.api.core.cql.ExecutionInfo::getExecutionProfile()",
+        "justification": "Execution profile is frequently passed together with ExecutionInfo, so to improve API clarity it can be included inside the object. Part of refactoring to add ExecutionInfo object to RequestTracker callbacks."
       }
     ]
   }
