@@ -78,12 +78,35 @@ public class MultiplexingRequestTracker implements RequestTracker {
   }
 
   @Override
+  public void onRequestStart(
+      @NonNull Request request,
+      @NonNull DriverExecutionProfile executionProfile,
+      @NonNull String requestLogPrefix) {
+    invokeTrackers(
+        tracker -> tracker.onRequestStart(request, executionProfile, requestLogPrefix),
+        requestLogPrefix,
+        "onRequestStart");
+  }
+
+  @Override
+  public void onRequestNodeStart(
+      @NonNull Request request,
+      @NonNull DriverExecutionProfile executionProfile,
+      @NonNull Node node,
+      @NonNull String requestLogPrefix) {
+    invokeTrackers(
+        tracker -> tracker.onRequestNodeStart(request, executionProfile, node, requestLogPrefix),
+        requestLogPrefix,
+        "onRequestNodeStart");
+  }
+
+  @Override
   public void onSuccess(
       @NonNull Request request,
       long latencyNanos,
       @NonNull DriverExecutionProfile executionProfile,
       @NonNull Node node,
-      @NonNull ExecutionInfo executionInfo,
+      @Nullable ExecutionInfo executionInfo,
       @NonNull String logPrefix) {
     invokeTrackers(
         tracker ->
@@ -116,7 +139,7 @@ public class MultiplexingRequestTracker implements RequestTracker {
       long latencyNanos,
       @NonNull DriverExecutionProfile executionProfile,
       @NonNull Node node,
-      @NonNull ExecutionInfo executionInfo,
+      @Nullable ExecutionInfo executionInfo,
       @NonNull String logPrefix) {
     invokeTrackers(
         tracker ->
@@ -133,7 +156,7 @@ public class MultiplexingRequestTracker implements RequestTracker {
       long latencyNanos,
       @NonNull DriverExecutionProfile executionProfile,
       @NonNull Node node,
-      ExecutionInfo executionInfo,
+      @Nullable ExecutionInfo executionInfo,
       @NonNull String logPrefix) {
     invokeTrackers(
         tracker ->

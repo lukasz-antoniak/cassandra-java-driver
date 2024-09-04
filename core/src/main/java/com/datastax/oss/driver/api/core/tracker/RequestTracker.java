@@ -37,6 +37,33 @@ import edu.umd.cs.findbugs.annotations.Nullable;
 public interface RequestTracker extends AutoCloseable {
 
   /**
+   * Invoked each time new request is created.
+   *
+   * @param request the request to be executed
+   * @param executionProfile the execution profile of this request
+   * @param requestLogPrefix the dedicated log prefix for this request
+   */
+  default void onRequestStart(
+      @NonNull Request request,
+      @NonNull DriverExecutionProfile executionProfile,
+      @NonNull String requestLogPrefix) {}
+
+  /**
+   * Invoked each time a new request is created and sent to next node. Due to retry policy, this
+   * method can be triggered multiple times while processing one logical request.
+   *
+   * @param request the request to be executed
+   * @param executionProfile the execution profile of this request
+   * @param node the node which will receive the request
+   * @param requestLogPrefix the dedicated log prefix for this request
+   */
+  default void onRequestNodeStart(
+      @NonNull Request request,
+      @NonNull DriverExecutionProfile executionProfile,
+      @NonNull Node node,
+      @NonNull String requestLogPrefix) {}
+
+  /**
    * Invoked each time a request succeeds.
    *
    * @param latencyNanos the overall execution time (from the {@link Session#execute(Request,
@@ -51,7 +78,7 @@ public interface RequestTracker extends AutoCloseable {
       long latencyNanos,
       @NonNull DriverExecutionProfile executionProfile,
       @NonNull Node node,
-      @NonNull ExecutionInfo executionInfo,
+      @Nullable ExecutionInfo executionInfo,
       @NonNull String requestLogPrefix) {
     // delegate call to the old method
     onSuccess(request, latencyNanos, executionProfile, node, requestLogPrefix);
@@ -71,6 +98,7 @@ public interface RequestTracker extends AutoCloseable {
   default void onError(
       @NonNull Request request,
       @NonNull Throwable error,
+      // TODO: Shall we expose start and end timestamp so that users do not need to call nanoTime()?
       long latencyNanos,
       @NonNull DriverExecutionProfile executionProfile,
       @Nullable Node node,
@@ -96,7 +124,7 @@ public interface RequestTracker extends AutoCloseable {
       long latencyNanos,
       @NonNull DriverExecutionProfile executionProfile,
       @NonNull Node node,
-      @NonNull ExecutionInfo executionInfo,
+      @Nullable ExecutionInfo executionInfo,
       @NonNull String requestLogPrefix) {
     // delegate call to the old method
     onNodeSuccess(request, latencyNanos, executionProfile, node, requestLogPrefix);
