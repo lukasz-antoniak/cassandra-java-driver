@@ -97,12 +97,12 @@ public class CqlRequestHandlerTrackerTest extends CqlRequestHandlerTestBase {
           .isSuccess(
               resultSet -> {
                 verify(requestTracker)
-                    .onRequestStart(
+                    .onRequestCreated(
                         eq(UNDEFINED_IDEMPOTENCE_STATEMENT),
                         any(DriverExecutionProfile.class),
                         any(String.class));
                 verify(requestTracker)
-                    .onRequestNodeStart(
+                    .onRequestCreatedForNode(
                         eq(UNDEFINED_IDEMPOTENCE_STATEMENT),
                         any(DriverExecutionProfile.class),
                         eq(node1),
@@ -125,7 +125,7 @@ public class CqlRequestHandlerTrackerTest extends CqlRequestHandlerTestBase {
                         any(ExecutionInfo.class),
                         any(String.class));
                 verify(requestTracker)
-                    .onRequestNodeStart(
+                    .onRequestCreatedForNode(
                         eq(UNDEFINED_IDEMPOTENCE_STATEMENT),
                         any(DriverExecutionProfile.class),
                         eq(node2),

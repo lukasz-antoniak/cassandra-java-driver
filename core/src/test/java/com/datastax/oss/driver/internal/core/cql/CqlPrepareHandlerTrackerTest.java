@@ -19,7 +19,6 @@ package com.datastax.oss.driver.internal.core.cql;
 
 import static com.datastax.oss.driver.Assertions.assertThatStage;
 import static com.datastax.oss.driver.internal.core.cql.CqlRequestHandlerTestBase.defaultFrameOf;
-import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyLong;
 import static org.mockito.Mockito.eq;
@@ -30,6 +29,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import com.datastax.oss.driver.api.core.config.DriverExecutionProfile;
+import com.datastax.oss.driver.api.core.cql.ExecutionInfo;
 import com.datastax.oss.driver.api.core.cql.PreparedStatement;
 import com.datastax.oss.driver.api.core.servererrors.BootstrappingException;
 import com.datastax.oss.driver.api.core.tracker.RequestTracker;
@@ -64,10 +64,10 @@ public class CqlPrepareHandlerTrackerTest extends CqlPrepareHandlerTestBase {
           .isSuccess(
               resultSet -> {
                 verify(requestTracker)
-                    .onRequestStart(
+                    .onRequestCreated(
                         eq(PREPARE_REQUEST), any(DriverExecutionProfile.class), any(String.class));
                 verify(requestTracker)
-                    .onRequestNodeStart(
+                    .onRequestCreatedForNode(
                         eq(PREPARE_REQUEST),
                         any(DriverExecutionProfile.class),
                         eq(node1),
@@ -79,10 +79,10 @@ public class CqlPrepareHandlerTrackerTest extends CqlPrepareHandlerTestBase {
                         anyLong(),
                         any(DriverExecutionProfile.class),
                         eq(node1),
-                        isNull(),
+                        any(ExecutionInfo.class),
                         any(String.class));
                 verify(requestTracker)
-                    .onRequestNodeStart(
+                    .onRequestCreatedForNode(
                         eq(PREPARE_REQUEST),
                         any(DriverExecutionProfile.class),
                         eq(node2),
@@ -93,7 +93,7 @@ public class CqlPrepareHandlerTrackerTest extends CqlPrepareHandlerTestBase {
                         anyLong(),
                         any(DriverExecutionProfile.class),
                         eq(node2),
-                        isNull(),
+                        any(ExecutionInfo.class),
                         any(String.class));
                 verify(requestTracker)
                     .onSuccess(
@@ -101,7 +101,7 @@ public class CqlPrepareHandlerTrackerTest extends CqlPrepareHandlerTestBase {
                         anyLong(),
                         any(DriverExecutionProfile.class),
                         eq(node2),
-                        isNull(),
+                        any(ExecutionInfo.class),
                         any(String.class));
                 verifyNoMoreInteractions(requestTracker);
               });

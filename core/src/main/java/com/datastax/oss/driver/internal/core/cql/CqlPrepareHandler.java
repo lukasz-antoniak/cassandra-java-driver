@@ -25,6 +25,7 @@ import com.datastax.oss.driver.api.core.ProtocolVersion;
 import com.datastax.oss.driver.api.core.RequestThrottlingException;
 import com.datastax.oss.driver.api.core.config.DefaultDriverOption;
 import com.datastax.oss.driver.api.core.config.DriverExecutionProfile;
+import com.datastax.oss.driver.api.core.cql.ExecutionInfo;
 import com.datastax.oss.driver.api.core.cql.PrepareRequest;
 import com.datastax.oss.driver.api.core.cql.PreparedStatement;
 import com.datastax.oss.driver.api.core.metadata.Node;
@@ -513,7 +514,7 @@ public class CqlPrepareHandler implements Throttled {
     if (requestTracker instanceof NoopRequestTracker) {
       return;
     }
-    requestTracker.onRequestStart(initialRequest, executionProfile, logPrefix);
+    requestTracker.onRequestCreated(initialRequest, executionProfile, logPrefix);
   }
 
   /**
@@ -524,7 +525,7 @@ public class CqlPrepareHandler implements Throttled {
     if (requestTracker instanceof NoopRequestTracker) {
       return;
     }
-    requestTracker.onRequestNodeStart(request, executionProfile, node, logPrefix);
+    requestTracker.onRequestCreatedForNode(request, executionProfile, node, logPrefix);
   }
 
   /** Notify request tracker that processing of statement has been completed by a given node. */
@@ -533,11 +534,13 @@ public class CqlPrepareHandler implements Throttled {
       return;
     }
     long latencyNanos = System.nanoTime() - startTimeNanos;
+    ExecutionInfo executionInfo = defaultExecutionInfo(request, node).build();
     if (error == null) {
-      requestTracker.onNodeSuccess(request, latencyNanos, executionProfile, node, null, logPrefix);
+      requestTracker.onNodeSuccess(
+          request, latencyNanos, executionProfile, node, executionInfo, logPrefix);
     } else {
       requestTracker.onNodeError(
-          request, error, latencyNanos, executionProfile, node, null, logPrefix);
+          request, error, latencyNanos, executionProfile, node, executionInfo, logPrefix);
     }
   }
 
@@ -550,12 +553,18 @@ public class CqlPrepareHandler implements Throttled {
       return;
     }
     long latencyNanos = System.nanoTime() - this.startTimeNanos;
+    ExecutionInfo executionInfo = defaultExecutionInfo(initialRequest, node).build();
     if (error == null) {
       requestTracker.onSuccess(
-          initialRequest, latencyNanos, executionProfile, node, null, logPrefix);
+          initialRequest, latencyNanos, executionProfile, node, executionInfo, logPrefix);
     } else {
       requestTracker.onError(
-          initialRequest, error, latencyNanos, executionProfile, node, null, logPrefix);
+          initialRequest, error, latencyNanos, executionProfile, node, executionInfo, logPrefix);
     }
+  }
+
+  private DefaultExecutionInfo.Builder defaultExecutionInfo(Request statement, Node node) {
+    return new DefaultExecutionInfo.Builder(
+        statement, node, -1, 0, null, session, context, executionProfile);
   }
 }

@@ -43,7 +43,7 @@ public interface RequestTracker extends AutoCloseable {
    * @param executionProfile the execution profile of this request
    * @param requestLogPrefix the dedicated log prefix for this request
    */
-  default void onRequestStart(
+  default void onRequestCreated(
       @NonNull Request request,
       @NonNull DriverExecutionProfile executionProfile,
       @NonNull String requestLogPrefix) {}
@@ -57,7 +57,7 @@ public interface RequestTracker extends AutoCloseable {
    * @param node the node which will receive the request
    * @param requestLogPrefix the dedicated log prefix for this request
    */
-  default void onRequestNodeStart(
+  default void onRequestCreatedForNode(
       @NonNull Request request,
       @NonNull DriverExecutionProfile executionProfile,
       @NonNull Node node,
@@ -78,7 +78,7 @@ public interface RequestTracker extends AutoCloseable {
       long latencyNanos,
       @NonNull DriverExecutionProfile executionProfile,
       @NonNull Node node,
-      @Nullable ExecutionInfo executionInfo,
+      @NonNull ExecutionInfo executionInfo,
       @NonNull String requestLogPrefix) {
     // delegate call to the old method
     onSuccess(request, latencyNanos, executionProfile, node, requestLogPrefix);
@@ -124,7 +124,7 @@ public interface RequestTracker extends AutoCloseable {
       long latencyNanos,
       @NonNull DriverExecutionProfile executionProfile,
       @NonNull Node node,
-      @Nullable ExecutionInfo executionInfo,
+      @NonNull ExecutionInfo executionInfo,
       @NonNull String requestLogPrefix) {
     // delegate call to the old method
     onNodeSuccess(request, latencyNanos, executionProfile, node, requestLogPrefix);

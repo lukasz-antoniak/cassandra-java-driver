@@ -199,7 +199,7 @@ public class PagingIterableSpliteratorIT {
     }
 
     @Override
-    public synchronized void onRequestStart(
+    public synchronized void onRequestCreated(
         @NonNull Request request,
         @NonNull DriverExecutionProfile executionProfile,
         @NonNull String requestLogPrefix) {
@@ -209,7 +209,7 @@ public class PagingIterableSpliteratorIT {
     }
 
     @Override
-    public synchronized void onRequestNodeStart(
+    public synchronized void onRequestCreatedForNode(
         @NonNull Request request,
         @NonNull DriverExecutionProfile executionProfile,
         @NonNull Node node,

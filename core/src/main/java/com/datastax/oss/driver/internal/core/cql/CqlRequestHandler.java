@@ -675,7 +675,6 @@ public class CqlRequestHandler implements Throttled {
                             || prepareError instanceof FunctionFailureException
                             || prepareError instanceof ProtocolError) {
                           LOG.trace("[{}] Unrecoverable error on reprepare, rethrowing", logPrefix);
-                          // TODO: What is the execution profile of reprepare statement?
                           trackReprepareStatementEnd(
                               reprepareRequest, this, prepareError, reprepareStartNanos, logPrefix);
                           trackNodeEnd(this, executionInfo, prepareError);
@@ -684,7 +683,6 @@ public class CqlRequestHandler implements Throttled {
                         }
                       }
                     } else if (exception instanceof RequestThrottlingException) {
-                      // TODO: What is the execution profile of reprepare statement?
                       trackReprepareStatementEnd(
                           reprepareRequest, this, exception, reprepareStartNanos, logPrefix);
                       trackNodeEnd(this, executionInfo, exception);
@@ -962,7 +960,7 @@ public class CqlRequestHandler implements Throttled {
     if (requestTracker instanceof NoopRequestTracker) {
       return;
     }
-    requestTracker.onRequestStart(request, executionProfile, logPrefix);
+    requestTracker.onRequestCreated(request, executionProfile, logPrefix);
   }
 
   /** Notify request tracker that processing of given statement starts at a certain node. */
@@ -970,7 +968,7 @@ public class CqlRequestHandler implements Throttled {
     if (requestTracker instanceof NoopRequestTracker) {
       return;
     }
-    requestTracker.onRequestNodeStart(request, executionProfile, node, logPrefix);
+    requestTracker.onRequestCreatedForNode(request, executionProfile, node, logPrefix);
   }
 
   /** Utility method to triggered request tracker based on {@code NodeResponseCallback}. */
@@ -1080,16 +1078,22 @@ public class CqlRequestHandler implements Throttled {
       Throwable error,
       long startTimeNanos,
       String logPrefix) {
+    ExecutionInfo executionInfo = defaultReprepareExecutionInfo(statement, callback.node).build();
     long endTimeNanos =
         trackNodeEndInternal(
             statement,
             callback.node,
-            null,
+            executionInfo,
             error,
             startTimeNanos,
             NANOTIME_NOT_MEASURED_YET,
             logPrefix);
     trackEndInternal(
-        statement, callback.node, null, error, startTimeNanos, endTimeNanos, logPrefix);
+        statement, callback.node, executionInfo, error, startTimeNanos, endTimeNanos, logPrefix);
+  }
+
+  private DefaultExecutionInfo.Builder defaultReprepareExecutionInfo(Request statement, Node node) {
+    return new DefaultExecutionInfo.Builder(
+        statement, node, -1, 0, null, session, context, executionProfile);
   }
 }
