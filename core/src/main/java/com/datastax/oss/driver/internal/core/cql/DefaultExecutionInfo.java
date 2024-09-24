@@ -128,6 +128,12 @@ public class DefaultExecutionInfo implements ExecutionInfo {
     return successfulExecutionIndex;
   }
 
+  @Nullable
+  @Override
+  public Throwable getDriverError() {
+    return driverError;
+  }
+
   @NonNull
   @Override
   public List<Map.Entry<Node, Throwable>> getErrors() {
