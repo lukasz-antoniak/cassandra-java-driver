@@ -971,7 +971,7 @@ public class CqlRequestHandler implements Throttled {
     requestTracker.onRequestCreatedForNode(request, executionProfile, node, logPrefix);
   }
 
-/** Utility method to trigger {@link RequestTracker} based on {@link NodeResponseCallback}.*/
+  /** Utility method to trigger {@link RequestTracker} based on {@link NodeResponseCallback}. */
   private long trackNodeEnd(
       NodeResponseCallback callback, ExecutionInfo executionInfo, Throwable error) {
     callback.nodeEndTimeNanos =

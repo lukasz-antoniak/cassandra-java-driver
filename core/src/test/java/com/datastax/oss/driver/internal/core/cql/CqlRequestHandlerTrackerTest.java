@@ -61,8 +61,8 @@ import org.junit.Test;
 import org.mockito.invocation.Invocation;
 
 public class CqlRequestHandlerTrackerTest extends CqlRequestHandlerTestBase {
-  private static final String ON_REQUEST_START = "onRequestStart";
-  private static final String ON_REQUEST_NODE_START = "onRequestNodeStart";
+  private static final String ON_REQUEST_CREATED = "onRequestCreated";
+  private static final String ON_REQUEST_CREATED_FOR_NODE = "onRequestCreatedForNode";
   private static final String ON_NODE_SUCCESS = "onNodeSuccess";
   private static final String ON_NODE_ERROR = "onNodeError";
   private static final String ON_SUCCESS = "onSuccess";
@@ -250,12 +250,12 @@ public class CqlRequestHandlerTrackerTest extends CqlRequestHandlerTestBase {
                 // start processing CQL statement
                 checkInvocation(
                     invocations.get(0),
-                    ON_REQUEST_START,
+                    ON_REQUEST_CREATED,
                     DefaultSimpleStatement.class,
                     LOG_PREFIX_PER_REQUEST);
                 checkInvocation(
                     invocations.get(1),
-                    ON_REQUEST_NODE_START,
+                    ON_REQUEST_CREATED_FOR_NODE,
                     DefaultSimpleStatement.class,
                     LOG_PREFIX_WITH_EXECUTION_NUMBER);
                 checkInvocation(
@@ -266,12 +266,12 @@ public class CqlRequestHandlerTrackerTest extends CqlRequestHandlerTestBase {
                 // implicit reprepare statement
                 checkInvocation(
                     invocations.get(3),
-                    ON_REQUEST_START,
+                    ON_REQUEST_CREATED,
                     DefaultPrepareRequest.class,
                     LOG_PREFIX_WITH_EXECUTION_NUMBER);
                 checkInvocation(
                     invocations.get(4),
-                    ON_REQUEST_NODE_START,
+                    ON_REQUEST_CREATED_FOR_NODE,
                     DefaultPrepareRequest.class,
                     LOG_PREFIX_WITH_EXECUTION_NUMBER);
                 checkInvocation(
@@ -287,7 +287,7 @@ public class CqlRequestHandlerTrackerTest extends CqlRequestHandlerTestBase {
                 // send new statement and process it
                 checkInvocation(
                     invocations.get(7),
-                    ON_REQUEST_NODE_START,
+                    ON_REQUEST_CREATED_FOR_NODE,
                     DefaultSimpleStatement.class,
                     LOG_PREFIX_WITH_EXECUTION_NUMBER);
                 checkInvocation(
