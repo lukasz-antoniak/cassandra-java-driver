@@ -209,10 +209,11 @@ public class CqlRequestHandler implements Throttled {
       try {
         return this.timer.newTimeout(
             (Timeout timeout1) -> {
-              ExecutionInfo executionInfo = failedExecutionInfoNoRequestSent().build();
-              setFinalError(
-                  executionInfo,
-                  new DriverTimeoutException("Query timed out after " + timeoutDuration));
+              DriverTimeoutException timeoutException =
+                  new DriverTimeoutException("Query timed out after " + timeoutDuration);
+              ExecutionInfo executionInfo =
+                  failedExecutionInfoNoRequestSent(timeoutException).build();
+              setFinalError(executionInfo, timeoutException);
             },
             timeoutDuration.toNanos(),
             TimeUnit.NANOSECONDS);
@@ -266,7 +267,7 @@ public class CqlRequestHandler implements Throttled {
       // We've reached the end of the query plan without finding any node to write to
       if (!result.isDone() && activeExecutionsCount.decrementAndGet() == 0) {
         // We're the last execution so fail the result
-        ExecutionInfo executionInfo = failedExecutionInfoNoRequestSent(statement).build();
+        ExecutionInfo executionInfo = failedExecutionInfoNoRequestSent(statement, null).build();
         setFinalError(executionInfo, AllNodesFailedException.fromErrors(this.errors));
       }
     } else {
@@ -323,7 +324,7 @@ public class CqlRequestHandler implements Throttled {
       NodeResponseCallback callback) {
     try {
       ExecutionInfo executionInfo =
-          defaultExecutionInfo(callback)
+          defaultExecutionInfo(callback, null)
               .withServerResponse(resultMessage, responseFrame)
               .withSchemaInAgreement(schemaInAgreement)
               .build();
@@ -357,7 +358,7 @@ public class CqlRequestHandler implements Throttled {
       }
     } catch (Throwable error) {
       // something unpredictable unexpected happened here that we can't blame on the request itself
-      ExecutionInfo executionInfo = defaultExecutionInfo(callback, -1).build();
+      ExecutionInfo executionInfo = defaultExecutionInfo(callback, -1, error).build();
       setFinalError(executionInfo, error);
     }
   }
@@ -393,7 +394,7 @@ public class CqlRequestHandler implements Throttled {
   public void onThrottleFailure(@NonNull RequestThrottlingException error) {
     sessionMetricUpdater.incrementCounter(
         DefaultSessionMetric.THROTTLING_ERRORS, executionProfile.getName());
-    ExecutionInfo executionInfo = failedExecutionInfoNoRequestSent().build();
+    ExecutionInfo executionInfo = failedExecutionInfoNoRequestSent(error).build();
     setFinalError(executionInfo, error);
   }
 
@@ -462,7 +463,8 @@ public class CqlRequestHandler implements Throttled {
     public void operationComplete(Future<java.lang.Void> future) throws Exception {
       if (!future.isSuccess()) {
         Throwable error = future.cause();
-        ExecutionInfo executionInfo = CqlRequestHandler.this.defaultExecutionInfo(this).build();
+        ExecutionInfo executionInfo =
+            CqlRequestHandler.this.defaultExecutionInfo(this, error).build();
         if (error instanceof EncoderException
             && error.getCause() instanceof FrameTooLongException) {
           trackNodeEnd(this, executionInfo, error.getCause());
@@ -611,14 +613,14 @@ public class CqlRequestHandler implements Throttled {
           LOG.trace("[{}] Got error response, processing", logPrefix);
           processErrorResponse((Error) responseMessage, responseFrame);
         } else {
-          ExecutionInfo executionInfo = defaultExecutionInfo().build();
           IllegalStateException error =
               new IllegalStateException("Unexpected response " + responseMessage);
+          ExecutionInfo executionInfo = defaultExecutionInfo(error).build();
           trackNodeEnd(this, executionInfo, error);
           setFinalError(executionInfo, error);
         }
       } catch (Throwable t) {
-        ExecutionInfo executionInfo = defaultExecutionInfo().build();
+        ExecutionInfo executionInfo = defaultExecutionInfo(t).build();
         trackNodeEnd(this, executionInfo, t);
         setFinalError(executionInfo, t);
       }
@@ -652,17 +654,18 @@ public class CqlRequestHandler implements Throttled {
                 logPrefix);
         PrepareRequest reprepareRequest = Conversions.toPrepareRequest(reprepareMessage);
         long reprepareStartNanos = System.nanoTime();
+        IllegalStateException driverError =
+            new IllegalStateException("Unexpected response " + errorMessage);
         trackNodeEnd(
             this,
-            defaultExecutionInfo().withServerResponse(errorFrame).build(),
-            new IllegalStateException("Unexpected response " + errorMessage));
+            defaultExecutionInfo(driverError).withServerResponse(errorFrame).build(),
+            driverError);
         // TODO: Shall we have different logPrefix?
         trackReprepareStatementStart(reprepareRequest, this, logPrefix);
         reprepareHandler
             .start()
             .handle(
                 (repreparedId, exception) -> {
-                  ExecutionInfo executionInfo = defaultExecutionInfo().build();
                   if (exception != null) {
                     // If the error is not recoverable, surface it to the client instead of retrying
                     if (exception instanceof UnexpectedResponseException) {
@@ -677,6 +680,7 @@ public class CqlRequestHandler implements Throttled {
                           LOG.trace("[{}] Unrecoverable error on reprepare, rethrowing", logPrefix);
                           trackReprepareStatementEnd(
                               reprepareRequest, this, prepareError, reprepareStartNanos, logPrefix);
+                          ExecutionInfo executionInfo = defaultExecutionInfo(prepareError).build();
                           trackNodeEnd(this, executionInfo, prepareError);
                           setFinalError(executionInfo, prepareError);
                           return null;
@@ -685,6 +689,7 @@ public class CqlRequestHandler implements Throttled {
                     } else if (exception instanceof RequestThrottlingException) {
                       trackReprepareStatementEnd(
                           reprepareRequest, this, exception, reprepareStartNanos, logPrefix);
+                      ExecutionInfo executionInfo = defaultExecutionInfo(exception).build();
                       trackNodeEnd(this, executionInfo, exception);
                       setFinalError(executionInfo, exception);
                       return null;
@@ -692,6 +697,7 @@ public class CqlRequestHandler implements Throttled {
                     recordError(node, exception);
                     trackReprepareStatementEnd(
                         reprepareRequest, this, exception, reprepareStartNanos, logPrefix);
+                    ExecutionInfo executionInfo = defaultExecutionInfo(exception).build();
                     trackNodeEnd(this, executionInfo, exception);
                     setFinalError(executionInfo, exception);
                     LOG.trace("[{}] Reprepare failed, trying next node", logPrefix);
@@ -708,6 +714,8 @@ public class CqlRequestHandler implements Throttled {
                                   Bytes.toHexString(idToReprepare),
                                   Bytes.toHexString(repreparedId)));
                       // notify error in initial statement execution
+                      ExecutionInfo executionInfo =
+                          defaultExecutionInfo(illegalStateException).build();
                       trackNodeEnd(this, executionInfo, illegalStateException);
                       setFinalError(executionInfo, illegalStateException);
                     }
@@ -727,7 +735,7 @@ public class CqlRequestHandler implements Throttled {
       NodeMetricUpdater metricUpdater = ((DefaultNode) node).getMetricUpdater();
       if (error instanceof BootstrappingException) {
         LOG.trace("[{}] {} is bootstrapping, trying next node", logPrefix, node);
-        ExecutionInfo executionInfo = defaultExecutionInfo().build();
+        ExecutionInfo executionInfo = defaultExecutionInfo(error).build();
         recordError(node, error);
         trackNodeEnd(this, executionInfo, error);
         sendRequest(statement, null, queryPlan, execution, retryCount, false);
@@ -736,7 +744,7 @@ public class CqlRequestHandler implements Throttled {
           || error instanceof ProtocolError) {
         LOG.trace("[{}] Unrecoverable error, rethrowing", logPrefix);
         metricUpdater.incrementCounter(DefaultNodeMetric.OTHER_ERRORS, executionProfile.getName());
-        ExecutionInfo executionInfo = defaultExecutionInfo().build();
+        ExecutionInfo executionInfo = defaultExecutionInfo(error).build();
         trackNodeEnd(this, executionInfo, error);
         setFinalError(executionInfo, error);
       } else {
@@ -809,7 +817,7 @@ public class CqlRequestHandler implements Throttled {
 
     private void processRetryVerdict(RetryVerdict verdict, Throwable error) {
       LOG.trace("[{}] Processing retry decision {}", logPrefix, verdict);
-      ExecutionInfo executionInfo = defaultExecutionInfo().build();
+      ExecutionInfo executionInfo = defaultExecutionInfo(error).build();
       switch (verdict.getRetryDecision()) {
         case RETRY_SAME:
           recordError(node, error);
@@ -881,10 +889,10 @@ public class CqlRequestHandler implements Throttled {
           RetryPolicy retryPolicy = Conversions.resolveRetryPolicy(context, executionProfile);
           verdict = retryPolicy.onRequestAbortedVerdict(statement, error, retryCount);
         } catch (Throwable cause) {
-          ExecutionInfo executionInfo = defaultExecutionInfo().build();
-          setFinalError(
-              executionInfo,
-              new IllegalStateException("Unexpected error while invoking the retry policy", cause));
+          IllegalStateException driverError =
+              new IllegalStateException("Unexpected error while invoking the retry policy", cause);
+          ExecutionInfo executionInfo = defaultExecutionInfo(driverError).build();
+          setFinalError(executionInfo, driverError);
           return;
         }
       }
@@ -907,8 +915,8 @@ public class CqlRequestHandler implements Throttled {
       }
     }
 
-    private DefaultExecutionInfo.Builder defaultExecutionInfo() {
-      return CqlRequestHandler.this.defaultExecutionInfo(this, execution);
+    private DefaultExecutionInfo.Builder defaultExecutionInfo(Throwable error) {
+      return CqlRequestHandler.this.defaultExecutionInfo(this, execution, error);
     }
 
     @Override
@@ -917,33 +925,37 @@ public class CqlRequestHandler implements Throttled {
     }
   }
 
-  private DefaultExecutionInfo.Builder defaultExecutionInfo(NodeResponseCallback callback) {
-    return defaultExecutionInfo(callback, callback.execution);
+  private DefaultExecutionInfo.Builder defaultExecutionInfo(
+      NodeResponseCallback callback, Throwable error) {
+    return defaultExecutionInfo(callback, callback.execution, error);
   }
 
   private DefaultExecutionInfo.Builder defaultExecutionInfo(
-      NodeResponseCallback callback, int execution) {
+      NodeResponseCallback callback, int execution, Throwable error) {
     return new DefaultExecutionInfo.Builder(
         callback.statement,
         callback.node,
         startedSpeculativeExecutionsCount.get(),
         execution,
+        error,
         errors,
         session,
         context,
         executionProfile);
   }
 
-  private DefaultExecutionInfo.Builder failedExecutionInfoNoRequestSent() {
-    return failedExecutionInfoNoRequestSent(initialStatement);
+  private DefaultExecutionInfo.Builder failedExecutionInfoNoRequestSent(Throwable error) {
+    return failedExecutionInfoNoRequestSent(initialStatement, error);
   }
 
-  private DefaultExecutionInfo.Builder failedExecutionInfoNoRequestSent(Statement<?> statement) {
+  private DefaultExecutionInfo.Builder failedExecutionInfoNoRequestSent(
+      Statement<?> statement, Throwable error) {
     return new DefaultExecutionInfo.Builder(
         statement,
         null,
         startedSpeculativeExecutionsCount.get(),
         -1,
+        error,
         errors,
         session,
         context,
@@ -1078,7 +1090,8 @@ public class CqlRequestHandler implements Throttled {
       Throwable error,
       long startTimeNanos,
       String logPrefix) {
-    ExecutionInfo executionInfo = defaultReprepareExecutionInfo(statement, callback.node).build();
+    ExecutionInfo executionInfo =
+        defaultReprepareExecutionInfo(statement, callback.node, error).build();
     long endTimeNanos =
         trackNodeEndInternal(
             statement,
@@ -1092,8 +1105,9 @@ public class CqlRequestHandler implements Throttled {
         statement, callback.node, executionInfo, error, startTimeNanos, endTimeNanos, logPrefix);
   }
 
-  private DefaultExecutionInfo.Builder defaultReprepareExecutionInfo(Request statement, Node node) {
+  private DefaultExecutionInfo.Builder defaultReprepareExecutionInfo(
+      Request statement, Node node, Throwable error) {
     return new DefaultExecutionInfo.Builder(
-        statement, node, -1, 0, null, session, context, executionProfile);
+        statement, node, -1, 0, error, null, session, context, executionProfile);
   }
 }

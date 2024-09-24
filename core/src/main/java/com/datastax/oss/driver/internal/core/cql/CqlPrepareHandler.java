@@ -534,7 +534,7 @@ public class CqlPrepareHandler implements Throttled {
       return;
     }
     long latencyNanos = System.nanoTime() - startTimeNanos;
-    ExecutionInfo executionInfo = defaultExecutionInfo(request, node).build();
+    ExecutionInfo executionInfo = defaultExecutionInfo(request, node, error).build();
     if (error == null) {
       requestTracker.onNodeSuccess(
           request, latencyNanos, executionProfile, node, executionInfo, logPrefix);
@@ -553,7 +553,7 @@ public class CqlPrepareHandler implements Throttled {
       return;
     }
     long latencyNanos = System.nanoTime() - this.startTimeNanos;
-    ExecutionInfo executionInfo = defaultExecutionInfo(initialRequest, node).build();
+    ExecutionInfo executionInfo = defaultExecutionInfo(initialRequest, node, error).build();
     if (error == null) {
       requestTracker.onSuccess(
           initialRequest, latencyNanos, executionProfile, node, executionInfo, logPrefix);
@@ -563,8 +563,9 @@ public class CqlPrepareHandler implements Throttled {
     }
   }
 
-  private DefaultExecutionInfo.Builder defaultExecutionInfo(Request statement, Node node) {
+  private DefaultExecutionInfo.Builder defaultExecutionInfo(
+      Request statement, Node node, Throwable error) {
     return new DefaultExecutionInfo.Builder(
-        statement, node, -1, 0, null, session, context, executionProfile);
+        statement, node, -1, 0, error, null, session, context, executionProfile);
   }
 }

@@ -47,6 +47,7 @@ public class DefaultExecutionInfo implements ExecutionInfo {
   private final Node coordinator;
   private final int speculativeExecutionCount;
   private final int successfulExecutionIndex;
+  private final Throwable driverError;
   private final List<Map.Entry<Node, Throwable>> errors;
   private final ByteBuffer pagingState;
   private final UUID tracingId;
@@ -64,6 +65,7 @@ public class DefaultExecutionInfo implements ExecutionInfo {
       Node coordinator,
       int speculativeExecutionCount,
       int successfulExecutionIndex,
+      Throwable driverError,
       List<Map.Entry<Node, Throwable>> errors,
       ByteBuffer pagingState,
       Frame frame,
@@ -76,6 +78,7 @@ public class DefaultExecutionInfo implements ExecutionInfo {
     this.coordinator = coordinator;
     this.speculativeExecutionCount = speculativeExecutionCount;
     this.successfulExecutionIndex = successfulExecutionIndex;
+    this.driverError = driverError;
     this.errors = errors;
     this.pagingState = pagingState;
 
@@ -202,6 +205,7 @@ public class DefaultExecutionInfo implements ExecutionInfo {
       Node coordinator,
       int speculativeExecutionCount,
       int successfulExecutionIndex,
+      Throwable driverError,
       List<Map.Entry<Node, Throwable>> errors,
       DefaultSession session,
       InternalDriverContext context,
@@ -211,6 +215,7 @@ public class DefaultExecutionInfo implements ExecutionInfo {
         coordinator,
         speculativeExecutionCount,
         successfulExecutionIndex,
+        driverError,
         errors,
         session,
         context,
@@ -222,6 +227,7 @@ public class DefaultExecutionInfo implements ExecutionInfo {
     private final Node coordinator;
     private final int speculativeExecutionCount;
     private final int successfulExecutionIndex;
+    private final Throwable driverError;
     private final List<Map.Entry<Node, Throwable>> errors;
     private final DefaultSession session;
     private final InternalDriverContext context;
@@ -236,6 +242,7 @@ public class DefaultExecutionInfo implements ExecutionInfo {
         Node coordinator,
         int speculativeExecutionCount,
         int successfulExecutionIndex,
+        Throwable driverError,
         List<Map.Entry<Node, Throwable>> errors,
         DefaultSession session,
         InternalDriverContext context,
@@ -244,6 +251,7 @@ public class DefaultExecutionInfo implements ExecutionInfo {
       this.coordinator = coordinator;
       this.speculativeExecutionCount = speculativeExecutionCount;
       this.successfulExecutionIndex = successfulExecutionIndex;
+      this.driverError = driverError;
       this.errors = errors;
       this.session = session;
       this.context = context;
@@ -274,6 +282,7 @@ public class DefaultExecutionInfo implements ExecutionInfo {
           coordinator,
           speculativeExecutionCount,
           successfulExecutionIndex,
+          driverError,
           errors,
           pagingState,
           frame,
