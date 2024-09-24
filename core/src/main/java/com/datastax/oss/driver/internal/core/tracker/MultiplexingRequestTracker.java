@@ -140,7 +140,7 @@ public class MultiplexingRequestTracker implements RequestTracker {
       long latencyNanos,
       @NonNull DriverExecutionProfile executionProfile,
       @NonNull Node node,
-      @Nullable ExecutionInfo executionInfo,
+      @NonNull ExecutionInfo executionInfo,
       @NonNull String logPrefix) {
     invokeTrackers(
         tracker ->
