@@ -628,7 +628,7 @@ public abstract class ContinuousRequestHandlerBase<StatementT extends Request, R
         Throwable error = future.cause();
         if (error instanceof EncoderException
             && error.getCause() instanceof FrameTooLongException) {
-          trackNodeError(node, error.getCause(), null);
+          trackNodeError(error.getCause(), null);
           lock.lock();
           try {
             abort(error.getCause(), false);
@@ -645,7 +645,7 @@ public abstract class ContinuousRequestHandlerBase<StatementT extends Request, R
               .getMetricUpdater()
               .incrementCounter(DefaultNodeMetric.UNSENT_REQUESTS, executionProfile.getName());
           recordError(node, error);
-          trackNodeError(node, error.getCause(), null);
+          trackNodeError(error.getCause(), null);
           sendRequest(statement, null, executionIndex, retryCount, scheduleSpeculativeExecution);
         }
       } else {
@@ -766,11 +766,11 @@ public abstract class ContinuousRequestHandlerBase<StatementT extends Request, R
           } else {
             IllegalStateException error =
                 new IllegalStateException("Unexpected response " + responseMessage);
-            trackNodeError(node, error, response);
+            trackNodeError(error, response);
             abort(error, false);
           }
         } catch (Throwable t) {
-          trackNodeError(node, t, response);
+          trackNodeError(t, response);
           abort(t, false);
         }
       } finally {
@@ -914,7 +914,7 @@ public abstract class ContinuousRequestHandlerBase<StatementT extends Request, R
         if (error instanceof BootstrappingException) {
           LOG.trace("[{}] {} is bootstrapping, trying next node", logPrefix, node);
           recordError(node, error);
-          trackNodeError(node, error, frame);
+          trackNodeError(error, frame);
           sendRequest(statement, null, executionIndex, retryCount, false);
         } else if (error instanceof QueryValidationException
             || error instanceof FunctionFailureException
@@ -926,7 +926,7 @@ public abstract class ContinuousRequestHandlerBase<StatementT extends Request, R
           NodeMetricUpdater metricUpdater = ((DefaultNode) node).getMetricUpdater();
           metricUpdater.incrementCounter(
               DefaultNodeMetric.OTHER_ERRORS, executionProfile.getName());
-          trackNodeError(node, error, frame);
+          trackNodeError(error, frame);
           abort(error, true);
         } else {
           try {
@@ -1065,7 +1065,7 @@ public abstract class ContinuousRequestHandlerBase<StatementT extends Request, R
                                     + "This usually happens when you run a 'USE...' query after "
                                     + "the statement was prepared.",
                                 Bytes.toHexString(idToReprepare), Bytes.toHexString(repreparedId)));
-                    trackNodeError(node, illegalStateException, null);
+                    trackNodeError(illegalStateException, null);
                     fatalError = illegalStateException;
                   } else {
                     LOG.trace(
@@ -1084,18 +1084,18 @@ public abstract class ContinuousRequestHandlerBase<StatementT extends Request, R
                           || prepareError instanceof FunctionFailureException
                           || prepareError instanceof ProtocolError) {
                         LOG.trace("[{}] Unrecoverable error on re-prepare, rethrowing", logPrefix);
-                        trackNodeError(node, prepareError, null);
+                        trackNodeError(prepareError, null);
                         fatalError = prepareError;
                       }
                     }
                   } else if (exception instanceof RequestThrottlingException) {
-                    trackNodeError(node, exception, null);
+                    trackNodeError(exception, null);
                     fatalError = exception;
                   }
                   if (fatalError == null) {
                     LOG.trace("[{}] Re-prepare failed, trying next node", logPrefix);
                     recordError(node, exception);
-                    trackNodeError(node, exception, null);
+                    trackNodeError(exception, null);
                     sendRequest(statement, null, executionIndex, retryCount, false);
                   }
                 }
@@ -1123,18 +1123,18 @@ public abstract class ContinuousRequestHandlerBase<StatementT extends Request, R
       switch (verdict.getRetryDecision()) {
         case RETRY_SAME:
           recordError(node, error);
-          trackNodeError(node, error, null);
+          trackNodeError(error, null);
           sendRequest(
               verdict.getRetryRequest(statement), node, executionIndex, retryCount + 1, false);
           break;
         case RETRY_NEXT:
           recordError(node, error);
-          trackNodeError(node, error, null);
+          trackNodeError(error, null);
           sendRequest(
               verdict.getRetryRequest(statement), null, executionIndex, retryCount + 1, false);
           break;
         case RETHROW:
-          trackNodeError(node, error, null);
+          trackNodeError(error, null);
           abort(error, true);
           break;
         case IGNORE:
@@ -1447,18 +1447,13 @@ public abstract class ContinuousRequestHandlerBase<StatementT extends Request, R
 
     // ERROR HANDLING
 
-    private void trackNodeError(
-        @NonNull Node node, @NonNull Throwable error, @Nullable Frame frame) {
+    private void trackNodeError(@NonNull Throwable error, @Nullable Frame frame) {
       if (nodeErrorReported.compareAndSet(false, true)) {
         long latencyNanos = System.nanoTime() - this.messageStartTimeNanos;
         context
             .getRequestTracker()
             .onNodeError(
-                this.statement,
-                error,
                 latencyNanos,
-                executionProfile,
-                node,
                 createExecutionInfo(error).withServerResponse(frame).build(),
                 logPrefix);
       }
@@ -1583,23 +1578,16 @@ public abstract class ContinuousRequestHandlerBase<StatementT extends Request, R
           }
 
           if (nodeSuccessReported.compareAndSet(false, true)) {
-            context
-                .getRequestTracker()
-                .onNodeSuccess(
-                    statement, nodeLatencyNanos, executionProfile, node, executionInfo, logPrefix);
+            context.getRequestTracker().onNodeSuccess(nodeLatencyNanos, executionInfo, logPrefix);
           }
-          context
-              .getRequestTracker()
-              .onSuccess(
-                  statement, totalLatencyNanos, executionProfile, node, executionInfo, logPrefix);
+          context.getRequestTracker().onSuccess(totalLatencyNanos, executionInfo, logPrefix);
         }
       } else {
         Throwable error = (Throwable) pageOrError;
         if (future.completeExceptionally(error)) {
           context
               .getRequestTracker()
-              .onError(
-                  statement, error, totalLatencyNanos, executionProfile, node, null, logPrefix);
+              .onError(totalLatencyNanos, createExecutionInfo(error).build(), logPrefix);
           if (error instanceof DriverTimeoutException) {
             throttler.signalTimeout(ContinuousRequestHandlerBase.this);
             session
