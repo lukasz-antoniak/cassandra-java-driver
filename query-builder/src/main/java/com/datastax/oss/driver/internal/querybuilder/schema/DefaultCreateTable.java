@@ -22,11 +22,13 @@ import static com.datastax.oss.driver.internal.querybuilder.schema.Utils.appendS
 import com.datastax.oss.driver.api.core.CqlIdentifier;
 import com.datastax.oss.driver.api.core.metadata.schema.ClusteringOrder;
 import com.datastax.oss.driver.api.core.type.DataType;
+import com.datastax.oss.driver.api.querybuilder.schema.ColumnConstraint;
 import com.datastax.oss.driver.api.querybuilder.schema.CreateTable;
 import com.datastax.oss.driver.api.querybuilder.schema.CreateTableStart;
 import com.datastax.oss.driver.api.querybuilder.schema.CreateTableWithOptions;
 import com.datastax.oss.driver.internal.querybuilder.CqlHelper;
 import com.datastax.oss.driver.internal.querybuilder.ImmutableCollections;
+import com.datastax.oss.driver.shaded.guava.common.collect.ImmutableList;
 import com.datastax.oss.driver.shaded.guava.common.collect.ImmutableMap;
 import com.datastax.oss.driver.shaded.guava.common.collect.ImmutableSet;
 import edu.umd.cs.findbugs.annotations.NonNull;
@@ -45,7 +47,7 @@ public class DefaultCreateTable implements CreateTableStart, CreateTable, Create
 
   private final ImmutableMap<String, Object> options;
 
-  private final ImmutableMap<CqlIdentifier, DataType> columnsInOrder;
+  private final ImmutableMap<CqlIdentifier, ColumnDefinition> columnsInOrder;
 
   private final ImmutableSet<CqlIdentifier> partitionKeyColumns;
   private final ImmutableSet<CqlIdentifier> clusteringKeyColumns;
@@ -78,7 +80,7 @@ public class DefaultCreateTable implements CreateTableStart, CreateTable, Create
       @NonNull CqlIdentifier tableName,
       boolean ifNotExists,
       boolean compactStorage,
-      @NonNull ImmutableMap<CqlIdentifier, DataType> columnsInOrder,
+      @NonNull ImmutableMap<CqlIdentifier, ColumnDefinition> columnsInOrder,
       @NonNull ImmutableSet<CqlIdentifier> partitionKeyColumns,
       @NonNull ImmutableSet<CqlIdentifier> clusteringKeyColumns,
       @NonNull ImmutableSet<CqlIdentifier> staticColumns,
@@ -124,7 +126,7 @@ public class DefaultCreateTable implements CreateTableStart, CreateTable, Create
         tableName,
         ifNotExists,
         compactStorage,
-        ImmutableCollections.append(columnsInOrder, columnName, dataType),
+        ImmutableCollections.append(columnsInOrder, columnName, new ColumnDefinition(dataType)),
         appendSet(partitionKeyColumns, columnName),
         clusteringKeyColumns,
         staticColumns,
@@ -142,7 +144,7 @@ public class DefaultCreateTable implements CreateTableStart, CreateTable, Create
         tableName,
         ifNotExists,
         compactStorage,
-        ImmutableCollections.append(columnsInOrder, columnName, dataType),
+        ImmutableCollections.append(columnsInOrder, columnName, new ColumnDefinition(dataType)),
         partitionKeyColumns,
         appendSet(clusteringKeyColumns, columnName),
         staticColumns,
@@ -153,13 +155,17 @@ public class DefaultCreateTable implements CreateTableStart, CreateTable, Create
 
   @NonNull
   @Override
-  public CreateTable withColumn(@NonNull CqlIdentifier columnName, @NonNull DataType dataType) {
+  public CreateTable withColumn(
+      @NonNull CqlIdentifier columnName, @NonNull DataType dataType, ColumnConstraint... checks) {
     return new DefaultCreateTable(
         keyspace,
         tableName,
         ifNotExists,
         compactStorage,
-        ImmutableCollections.append(columnsInOrder, columnName, dataType),
+        ImmutableCollections.append(
+            columnsInOrder,
+            columnName,
+            new ColumnDefinition(dataType, ImmutableList.copyOf(checks))),
         partitionKeyColumns,
         clusteringKeyColumns,
         staticColumns,
@@ -177,7 +183,7 @@ public class DefaultCreateTable implements CreateTableStart, CreateTable, Create
         tableName,
         ifNotExists,
         compactStorage,
-        ImmutableCollections.append(columnsInOrder, columnName, dataType),
+        ImmutableCollections.append(columnsInOrder, columnName, new ColumnDefinition(dataType)),
         partitionKeyColumns,
         clusteringKeyColumns,
         appendSet(staticColumns, columnName),
@@ -256,16 +262,27 @@ public class DefaultCreateTable implements CreateTableStart, CreateTable, Create
     builder.append(" (");
 
     boolean first = true;
-    for (Map.Entry<CqlIdentifier, DataType> column : columnsInOrder.entrySet()) {
+    for (Map.Entry<CqlIdentifier, ColumnDefinition> column : columnsInOrder.entrySet()) {
       if (first) {
         first = false;
       } else {
         builder.append(',');
       }
-      builder
-          .append(column.getKey().asCql(true))
-          .append(' ')
-          .append(column.getValue().asCql(true, true));
+      String columnName = column.getKey().asCql(true);
+      builder.append(columnName).append(' ').append(column.getValue().getType().asCql(true, true));
+
+      if (!column.getValue().getConstraints().isEmpty()) {
+        builder.append(" CHECK ");
+        boolean firstConstraint = true;
+        for (ColumnConstraint constraint : column.getValue().getConstraints()) {
+          if (firstConstraint) {
+            firstConstraint = false;
+          } else {
+            builder.append(" AND ");
+          }
+          constraint.withColumnName(columnName).appendTo(builder);
+        }
+      }
 
       if (singlePrimaryKey && partitionKeyColumns.contains(column.getKey())) {
         builder.append(" PRIMARY KEY");
@@ -367,7 +384,7 @@ public class DefaultCreateTable implements CreateTableStart, CreateTable, Create
   }
 
   @NonNull
-  public ImmutableMap<CqlIdentifier, DataType> getColumnsInOrder() {
+  public ImmutableMap<CqlIdentifier, ColumnDefinition> getColumnsInOrder() {
     return columnsInOrder;
   }
 

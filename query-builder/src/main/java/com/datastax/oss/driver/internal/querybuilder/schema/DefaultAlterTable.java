@@ -27,8 +27,10 @@ import com.datastax.oss.driver.api.querybuilder.schema.AlterTableDropColumnEnd;
 import com.datastax.oss.driver.api.querybuilder.schema.AlterTableRenameColumnEnd;
 import com.datastax.oss.driver.api.querybuilder.schema.AlterTableStart;
 import com.datastax.oss.driver.api.querybuilder.schema.AlterTableWithOptionsEnd;
+import com.datastax.oss.driver.api.querybuilder.schema.ColumnConstraint;
 import com.datastax.oss.driver.internal.querybuilder.CqlHelper;
 import com.datastax.oss.driver.internal.querybuilder.ImmutableCollections;
+import com.datastax.oss.driver.shaded.guava.common.collect.ImmutableList;
 import com.datastax.oss.driver.shaded.guava.common.collect.ImmutableMap;
 import com.datastax.oss.driver.shaded.guava.common.collect.ImmutableSet;
 import edu.umd.cs.findbugs.annotations.NonNull;
@@ -53,10 +55,12 @@ public class DefaultAlterTable
   private final ImmutableSet<CqlIdentifier> columnsToAddStatic;
   private final ImmutableSet<CqlIdentifier> columnsToDrop;
   private final ImmutableMap<CqlIdentifier, CqlIdentifier> columnsToRename;
+  private final ImmutableList<ColumnConstraint> constraintsToAlter;
   private final CqlIdentifier columnToAlter;
   private final DataType columnToAlterType;
   private final ImmutableMap<String, Object> options;
   private final boolean dropCompactStorage;
+  private final boolean dropCheck;
 
   public DefaultAlterTable(@NonNull CqlIdentifier tableName) {
     this(null, tableName);
@@ -67,11 +71,13 @@ public class DefaultAlterTable
         keyspace,
         tableName,
         false,
+        false,
         ImmutableMap.of(),
         ImmutableSet.of(),
         ImmutableSet.of(),
         ImmutableSet.of(),
         ImmutableMap.of(),
+        ImmutableList.of(),
         null,
         null,
         ImmutableMap.of());
@@ -81,22 +87,26 @@ public class DefaultAlterTable
       @Nullable CqlIdentifier keyspace,
       @NonNull CqlIdentifier tableName,
       boolean dropCompactStorage,
+      boolean dropCheck,
       @NonNull ImmutableMap<CqlIdentifier, DataType> allColumnsToAddInOrder,
       @NonNull ImmutableSet<CqlIdentifier> columnsToAddRegular,
       @NonNull ImmutableSet<CqlIdentifier> columnsToAddStatic,
       @NonNull ImmutableSet<CqlIdentifier> columnsToDrop,
       @NonNull ImmutableMap<CqlIdentifier, CqlIdentifier> columnsToRename,
+      @NonNull ImmutableList<ColumnConstraint> constraintsToAlter,
       @Nullable CqlIdentifier columnToAlter,
       @Nullable DataType columnToAlterType,
       @NonNull ImmutableMap<String, Object> options) {
     this.keyspace = keyspace;
     this.tableName = tableName;
     this.dropCompactStorage = dropCompactStorage;
+    this.dropCheck = dropCheck;
     this.allColumnsToAddInOrder = allColumnsToAddInOrder;
     this.columnsToAddRegular = columnsToAddRegular;
     this.columnsToAddStatic = columnsToAddStatic;
     this.columnsToDrop = columnsToDrop;
     this.columnsToRename = columnsToRename;
+    this.constraintsToAlter = constraintsToAlter;
     this.columnToAlter = columnToAlter;
     this.columnToAlterType = columnToAlterType;
     this.options = options;
@@ -110,11 +120,13 @@ public class DefaultAlterTable
         keyspace,
         tableName,
         dropCompactStorage,
+        dropCheck,
         ImmutableCollections.append(allColumnsToAddInOrder, columnName, dataType),
         appendSet(columnsToAddRegular, columnName),
         columnsToAddStatic,
         columnsToDrop,
         columnsToRename,
+        constraintsToAlter,
         columnToAlter,
         columnToAlterType,
         options);
@@ -128,11 +140,13 @@ public class DefaultAlterTable
         keyspace,
         tableName,
         dropCompactStorage,
+        dropCheck,
         ImmutableCollections.append(allColumnsToAddInOrder, columnName, dataType),
         columnsToAddRegular,
         appendSet(columnsToAddStatic, columnName),
         columnsToDrop,
         columnsToRename,
+        constraintsToAlter,
         columnToAlter,
         columnToAlterType,
         options);
@@ -145,11 +159,13 @@ public class DefaultAlterTable
         keyspace,
         tableName,
         true,
+        dropCheck,
         allColumnsToAddInOrder,
         columnsToAddRegular,
         columnsToAddStatic,
         columnsToDrop,
         columnsToRename,
+        constraintsToAlter,
         columnToAlter,
         columnToAlterType,
         options);
@@ -168,11 +184,13 @@ public class DefaultAlterTable
         keyspace,
         tableName,
         dropCompactStorage,
+        dropCheck,
         allColumnsToAddInOrder,
         columnsToAddRegular,
         columnsToAddStatic,
         builder.build(),
         columnsToRename,
+        constraintsToAlter,
         columnToAlter,
         columnToAlterType,
         options);
@@ -186,11 +204,13 @@ public class DefaultAlterTable
         keyspace,
         tableName,
         dropCompactStorage,
+        dropCheck,
         allColumnsToAddInOrder,
         columnsToAddRegular,
         columnsToAddStatic,
         columnsToDrop,
         ImmutableCollections.append(columnsToRename, from, to),
+        constraintsToAlter,
         columnToAlter,
         columnToAlterType,
         options);
@@ -203,13 +223,54 @@ public class DefaultAlterTable
         keyspace,
         tableName,
         dropCompactStorage,
+        dropCheck,
         allColumnsToAddInOrder,
         columnsToAddRegular,
         columnsToAddStatic,
         columnsToDrop,
         columnsToRename,
+        constraintsToAlter,
         columnName,
         dataType,
+        options);
+  }
+
+  @NonNull
+  @Override
+  public BuildableQuery alterColumn(
+      @NonNull CqlIdentifier columnName, ColumnConstraint... constraints) {
+    return new DefaultAlterTable(
+        keyspace,
+        tableName,
+        dropCompactStorage,
+        dropCheck,
+        allColumnsToAddInOrder,
+        columnsToAddRegular,
+        columnsToAddStatic,
+        columnsToDrop,
+        columnsToRename,
+        ImmutableList.copyOf(constraints),
+        columnName,
+        columnToAlterType,
+        options);
+  }
+
+  @NonNull
+  @Override
+  public BuildableQuery dropCheck(@NonNull CqlIdentifier columnName) {
+    return new DefaultAlterTable(
+        keyspace,
+        tableName,
+        dropCompactStorage,
+        true,
+        allColumnsToAddInOrder,
+        columnsToAddRegular,
+        columnsToAddStatic,
+        columnsToDrop,
+        columnsToRename,
+        constraintsToAlter,
+        columnName,
+        columnToAlterType,
         options);
   }
 
@@ -220,11 +281,13 @@ public class DefaultAlterTable
         keyspace,
         tableName,
         dropCompactStorage,
+        dropCheck,
         allColumnsToAddInOrder,
         columnsToAddRegular,
         columnsToAddStatic,
         columnsToDrop,
         columnsToRename,
+        constraintsToAlter,
         columnToAlter,
         columnToAlterType,
         ImmutableCollections.append(options, name, value));
@@ -237,13 +300,27 @@ public class DefaultAlterTable
 
     CqlHelper.qualify(keyspace, tableName, builder);
 
-    if (columnToAlter != null) {
+    if (columnToAlter != null && columnToAlterType != null) {
       return builder
           .append(" ALTER ")
           .append(columnToAlter.asCql(true))
           .append(" TYPE ")
           .append(columnToAlterType.asCql(true, true))
           .toString();
+    } else if (columnToAlter != null && !constraintsToAlter.isEmpty()) {
+      String columnName = columnToAlter.asCql(true);
+      builder.append(" ALTER ").append(columnName).append(" CHECK ");
+      boolean firstConstraint = true;
+      for (ColumnConstraint constraint : constraintsToAlter) {
+        if (firstConstraint) {
+          firstConstraint = false;
+        } else {
+          builder.append(" AND ");
+        }
+        constraint.withColumnName(columnName).appendTo(builder);
+      }
+    } else if (columnToAlter != null && dropCheck) {
+      builder.append(" ALTER ").append(columnToAlter.asCql(true)).append(" DROP CHECK");
     } else if (!allColumnsToAddInOrder.isEmpty()) {
       builder.append(" ADD ");
       if (allColumnsToAddInOrder.size() > 1) {

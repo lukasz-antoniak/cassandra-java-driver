@@ -18,6 +18,7 @@
 package com.datastax.oss.driver.api.querybuilder.schema;
 
 import static com.datastax.oss.driver.api.querybuilder.Assertions.assertThat;
+import static com.datastax.oss.driver.api.querybuilder.QueryBuilder.literal;
 import static com.datastax.oss.driver.api.querybuilder.SchemaBuilder.alterTable;
 
 import com.datastax.oss.driver.api.core.type.DataTypes;
@@ -34,6 +35,22 @@ public class AlterTableTest {
   public void should_generate_alter_table_with_alter_column_type() {
     assertThat(alterTable("foo", "bar").alterColumn("x", DataTypes.TEXT))
         .hasCql("ALTER TABLE foo.bar ALTER x TYPE text");
+  }
+
+  @Test
+  public void should_generate_alter_table_with_alter_column_constraint() {
+    assertThat(
+            alterTable("foo", "bar")
+                .alterColumn("x", ColumnConstraint.scalar().isGreaterThan(literal(10))))
+        .hasCql("ALTER TABLE foo.bar ALTER x CHECK x > 10");
+
+    assertThat(
+            alterTable("foo", "bar")
+                .alterColumn(
+                    "x",
+                    ColumnConstraint.length().isGreaterThan(literal(3)),
+                    ColumnConstraint.length().isLessThan(literal(10))))
+        .hasCql("ALTER TABLE foo.bar ALTER x CHECK length(x) > 3 AND length(x) < 10");
   }
 
   @Test
@@ -95,6 +112,11 @@ public class AlterTableTest {
   public void should_generate_alter_table_with_drop_compact_storage() {
     assertThat(alterTable("bar").dropCompactStorage())
         .hasCql("ALTER TABLE bar DROP COMPACT STORAGE");
+  }
+
+  @Test
+  public void should_generate_alter_table_with_drop_check() {
+    assertThat(alterTable("bar").dropCheck("foo")).hasCql("ALTER TABLE bar ALTER foo DROP CHECK");
   }
 
   @Test

@@ -18,6 +18,7 @@
 package com.datastax.oss.driver.api.querybuilder.schema;
 
 import static com.datastax.oss.driver.api.querybuilder.Assertions.assertThat;
+import static com.datastax.oss.driver.api.querybuilder.QueryBuilder.literal;
 import static com.datastax.oss.driver.api.querybuilder.SchemaBuilder.createTable;
 import static com.datastax.oss.driver.api.querybuilder.SchemaBuilder.udt;
 
@@ -36,6 +37,38 @@ public class CreateTableTest {
   @Test
   public void should_not_throw_on_toString_for_CreateTableStart() {
     assertThat(createTable("foo").toString()).isEqualTo("CREATE TABLE foo");
+  }
+
+  @Test
+  public void should_crate_scalar_constraint() {
+    assertThat(
+            createTable("bar")
+                .withPartitionKey("kc", DataTypes.INT)
+                .withColumn(
+                    "v", DataTypes.INT, ColumnConstraint.scalar().isGreaterThan(literal(-1))))
+        .hasCql("CREATE TABLE bar (kc int PRIMARY KEY,v int CHECK v > -1)");
+
+    assertThat(
+            createTable("bar")
+                .withPartitionKey("kc", DataTypes.INT)
+                .withColumn(
+                    "v",
+                    DataTypes.INT,
+                    ColumnConstraint.scalar().isGreaterThan(literal(1)),
+                    ColumnConstraint.scalar().isLessThan(literal(5))))
+        .hasCql("CREATE TABLE bar (kc int PRIMARY KEY,v int CHECK v > 1 AND v < 5)");
+  }
+
+  @Test
+  public void should_crate_length_constraint() {
+    assertThat(
+            createTable("bar")
+                .withPartitionKey("kc", DataTypes.INT)
+                .withColumn(
+                    "v",
+                    DataTypes.TEXT,
+                    ColumnConstraint.length().isLessThanOrEqualTo(literal(255))))
+        .hasCql("CREATE TABLE bar (kc int PRIMARY KEY,v text CHECK length(v) <= 255)");
   }
 
   @Test

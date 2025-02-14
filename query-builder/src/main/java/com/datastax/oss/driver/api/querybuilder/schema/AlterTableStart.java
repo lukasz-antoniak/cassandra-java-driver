@@ -45,10 +45,33 @@ public interface AlterTableStart
 
   /**
    * Shortcut for {@link #alterColumn(CqlIdentifier,DataType)
-   * alterColumn(CqlIdentifier.fromCql(columnName,dataType)}.
+   * alterColumn(CqlIdentifier.fromCql(columnName),dataType}.
    */
   @NonNull
   default BuildableQuery alterColumn(@NonNull String columnName, @NonNull DataType dataType) {
     return alterColumn(CqlIdentifier.fromCql(columnName), dataType);
+  }
+
+  /** Completes ALTER TABLE specifying that the constraints of a column should be changed. */
+  @NonNull
+  BuildableQuery alterColumn(@NonNull CqlIdentifier columnName, ColumnConstraint... constraints);
+
+  /**
+   * Shortcut for {@link #alterColumn(CqlIdentifier, ColumnConstraint[])
+   * alterColumn(CqlIdentifier.fromCql(columnName),constraints}.
+   */
+  @NonNull
+  default BuildableQuery alterColumn(@NonNull String columnName, ColumnConstraint... constraints) {
+    return alterColumn(CqlIdentifier.fromCql(columnName), constraints);
+  }
+
+  /** Completes ALTER TABLE specifying that column constraint should be removed from the table. */
+  @NonNull
+  BuildableQuery dropCheck(@NonNull CqlIdentifier columnName);
+
+  /** Shortcut for {@link #dropCheck(CqlIdentifier) dropCheck(CqlIdentifier.fromCql(columnName)}. */
+  @NonNull
+  default BuildableQuery dropCheck(@NonNull String columnName) {
+    return dropCheck(CqlIdentifier.fromCql(columnName));
   }
 }

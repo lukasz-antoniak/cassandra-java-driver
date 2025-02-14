@@ -30,7 +30,7 @@ public interface CreateTable extends BuildableQuery, OngoingPartitionKey, Create
    * Adds a clustering column definition in the CREATE TABLE statement.
    *
    * <p>This includes the column declaration (you don't need an additional {@link
-   * #withColumn(CqlIdentifier, DataType) addColumn} call).
+   * #withColumn(CqlIdentifier, DataType, ColumnConstraint[]) addColumn} call).
    *
    * <p>Clustering key columns are added in the order of their declaration.
    *
@@ -56,22 +56,32 @@ public interface CreateTable extends BuildableQuery, OngoingPartitionKey, Create
    * {@link SchemaBuilder#udt(CqlIdentifier, boolean)}.
    */
   @NonNull
-  CreateTable withColumn(@NonNull CqlIdentifier columnName, @NonNull DataType dataType);
+  CreateTable withColumn(
+      @NonNull CqlIdentifier columnName, @NonNull DataType dataType, ColumnConstraint... checks);
 
   /**
-   * Shortcut for {@link #withColumn(CqlIdentifier, DataType)
-   * withColumn(CqlIdentifier.asCql(columnName), dataType)}.
+   * Shortcut for {@link #withColumn(CqlIdentifier, DataType, ColumnConstraint[])
+   * withColumn(columnName, dataType, new ColumnConstraint[0])}.
    */
   @NonNull
   default CreateTable withColumn(@NonNull String columnName, @NonNull DataType dataType) {
-    return withColumn(CqlIdentifier.fromCql(columnName), dataType);
+    return withColumn(columnName, dataType, new ColumnConstraint[0]);
+  }
+
+  /**
+   * Shortcut for {@link #withColumn(CqlIdentifier, DataType, ColumnConstraint[])
+   * withColumn(CqlIdentifier.fromCql(columnName), dataType, checks)}.
+   */
+  default CreateTable withColumn(
+      @NonNull String columnName, @NonNull DataType dataType, ColumnConstraint... checks) {
+    return withColumn(CqlIdentifier.fromCql(columnName), dataType, checks);
   }
 
   /**
    * Adds a static column definition in the CREATE TABLE statement.
    *
    * <p>This includes the column declaration (you don't need an additional {@link
-   * #withColumn(CqlIdentifier, DataType) addColumn} call).
+   * #withColumn(CqlIdentifier, DataType, ColumnConstraint[]) addColumn} call).
    *
    * <p>To create the data type, use the constants and static methods in {@link DataTypes}, or
    * {@link SchemaBuilder#udt(CqlIdentifier, boolean)}.

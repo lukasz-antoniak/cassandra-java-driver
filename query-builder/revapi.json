@@ -2782,6 +2782,22 @@
         "code": "java.method.addedToInterface",
         "new": "method com.datastax.oss.driver.api.querybuilder.select.Select com.datastax.oss.driver.api.querybuilder.select.Select::orderByAnnOf(com.datastax.oss.driver.api.core.CqlIdentifier, com.datastax.oss.driver.api.core.data.CqlVector<?>)",
         "justification": "JAVA-3118: Add support for vector data type in Schema Builder, QueryBuilder"
+      },
+      {
+        "code": "java.method.addedToInterface",
+        "new": "method com.datastax.oss.driver.api.querybuilder.BuildableQuery com.datastax.oss.driver.api.querybuilder.schema.AlterTableStart::alterColumn(com.datastax.oss.driver.api.core.CqlIdentifier, com.datastax.oss.driver.api.querybuilder.schema.ColumnConstraint[])",
+        "justification": "CASSJAVA-72: Add column constraints support"
+      },
+      {
+        "code": "java.method.addedToInterface",
+        "new": "method com.datastax.oss.driver.api.querybuilder.BuildableQuery com.datastax.oss.driver.api.querybuilder.schema.AlterTableStart::dropCheck(com.datastax.oss.driver.api.core.CqlIdentifier)",
+        "justification": "CASSJAVA-72: Add column constraints support"
+      },
+      {
+        "code": "java.method.numberOfParametersChanged",
+        "old": "method com.datastax.oss.driver.api.querybuilder.schema.CreateTable com.datastax.oss.driver.api.querybuilder.schema.CreateTable::withColumn(com.datastax.oss.driver.api.core.CqlIdentifier, com.datastax.oss.driver.api.core.type.DataType)",
+        "new": "method com.datastax.oss.driver.api.querybuilder.schema.CreateTable com.datastax.oss.driver.api.querybuilder.schema.CreateTable::withColumn(com.datastax.oss.driver.api.core.CqlIdentifier, com.datastax.oss.driver.api.core.type.DataType, com.datastax.oss.driver.api.querybuilder.schema.ColumnConstraint[])",
+        "justification": "CASSJAVA-72: Add column constraints support"
       }
     ]
   }
