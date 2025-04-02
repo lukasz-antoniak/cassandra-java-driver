@@ -266,16 +266,40 @@ public class DefaultSession implements CqlSession {
     return singleThreaded.closeFuture;
   }
 
+  @Override
+  public void close() {
+    logCloseReason("close");
+    CqlSession.super.close();
+  }
+
   @NonNull
   @Override
   public CompletionStage<Void> closeAsync() {
+    logCloseReason("closeAsync");
     return closeSafely(singleThreaded::close);
   }
 
   @NonNull
   @Override
   public CompletionStage<Void> forceCloseAsync() {
+    logCloseReason("forceCloseAsync");
     return closeSafely(singleThreaded::forceClose);
+  }
+
+  private void logCloseReason(String message) {
+    if (LOG.isTraceEnabled()) {
+      StringBuilder builder = new StringBuilder();
+      StackTraceElement[] sts = Thread.currentThread().getStackTrace();
+      for (StackTraceElement st : sts) {
+        builder.append("\t").append(st.toString()).append("\n");
+      }
+      LOG.trace(
+          "[{}] Session ({}) {} stack: \n{}",
+          logPrefix,
+          context.getSessionName(),
+          message,
+          builder);
+    }
   }
 
   private CompletionStage<Void> closeSafely(Runnable action) {
@@ -374,9 +398,11 @@ public class DefaultSession implements CqlSession {
       closeFuture.whenComplete(
           (v, error) ->
               LOG.debug(
-                  "Closing session {} ({} live instances)",
+                  "Closing session {} ({} live instances){}",
                   context.getSessionName(),
-                  INSTANCE_COUNT.decrementAndGet()));
+                  INSTANCE_COUNT.decrementAndGet(),
+                  error != null ? " with error: " + error.getMessage() : "",
+                  error));
 
       MetadataManager metadataManager = context.getMetadataManager();
       metadataManager.addContactPoints(initialContactPoints);
@@ -589,6 +615,7 @@ public class DefaultSession implements CqlSession {
           .onClose()
           .addListener(
               f -> {
+                logCloseReason("Netty listener closing");
                 if (!f.isSuccess()) {
                   closeFuture.completeExceptionally(f.cause());
                 } else {
