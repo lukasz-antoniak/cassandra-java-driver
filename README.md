@@ -1,7 +1,8 @@
 ---
-title: Java Driver for Apache Cassandra
+title: Home
 nav_order: 1
 has_children: true
+has_toc: false
 ---
 
 # Java Driver for Apache Cassandra®
