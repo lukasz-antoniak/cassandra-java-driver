@@ -17,6 +17,11 @@ specific language governing permissions and limitations
 under the License.
 -->
 
+---
+title: Core driver
+nav_order: 1
+---
+
 ## Core driver
 
 The core module handles cluster connectivity and request execution. It is published under the
