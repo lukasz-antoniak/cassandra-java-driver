@@ -1,3 +1,9 @@
+---
+title: Manual
+nav_order: 1
+has_children: true
+---
+
 <!--
 Licensed to the Apache Software Foundation (ASF) under one
 or more contributor license agreements.  See the NOTICE file

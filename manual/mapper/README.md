@@ -17,11 +17,6 @@ specific language governing permissions and limitations
 under the License.
 -->
 
----
-title: Mapper
-nav_order: 2
----
-
 ## Mapper
 
 The mapper generates the boilerplate to execute queries and convert the results into
