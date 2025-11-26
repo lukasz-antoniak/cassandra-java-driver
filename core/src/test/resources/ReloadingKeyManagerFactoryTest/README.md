@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # How to create cert stores for ReloadingKeyManagerFactoryTest
 
 Need the following cert stores:
