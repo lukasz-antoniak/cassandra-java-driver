@@ -1,5 +1,6 @@
 ---
 title: Mapper
+parent: Manual
 nav_order: 2
 has_children: true
 ---

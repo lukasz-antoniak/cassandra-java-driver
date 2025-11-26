@@ -1,5 +1,6 @@
 ---
 title: Developer docs
+parent: Manual
 nav_order: 3
 has_children: true
 ---

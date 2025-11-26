@@ -1,5 +1,6 @@
 ---
 title: Core driver
+parent: Manual
 nav_order: 1
 has_children: true
 ---

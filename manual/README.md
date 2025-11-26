@@ -1,5 +1,6 @@
 ---
 title: Manual
+parent: Java Driver for Apache Cassandra
 nav_order: 2
 has_children: true
 ---
