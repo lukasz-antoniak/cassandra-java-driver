@@ -19,4 +19,3 @@ title: Java Driver
 description: Java Driver for Apache Cassandra®
 
 remote_theme: pmarsceill/just-the-docs
-favicon_ico: "/_includes/favicon.ico"
