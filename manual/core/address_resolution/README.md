@@ -1,3 +1,10 @@
+---
+title: Address resolution
+parent: Core driver
+nav_order: 1
+has_children: false
+---
+
 <!--
 Licensed to the Apache Software Foundation (ASF) under one
 or more contributor license agreements.  See the NOTICE file

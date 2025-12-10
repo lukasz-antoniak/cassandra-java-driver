@@ -1,3 +1,10 @@
+---
+title: Authentication
+parent: Core driver
+nav_order: 3
+has_children: false
+---
+
 <!--
 Licensed to the Apache Software Foundation (ASF) under one
 or more contributor license agreements.  See the NOTICE file
