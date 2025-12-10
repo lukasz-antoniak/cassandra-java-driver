@@ -19,3 +19,4 @@ title: Java Driver
 description: Java Driver for Apache Cassandra®
 
 remote_theme: pmarsceill/just-the-docs
+color_scheme: custom
