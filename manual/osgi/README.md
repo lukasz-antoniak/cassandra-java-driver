@@ -1,3 +1,10 @@
+---
+title: OSGi
+parent: Manual
+nav_order: 6
+has_children: false
+---
+
 <!--
 Licensed to the Apache Software Foundation (ASF) under one
 or more contributor license agreements.  See the NOTICE file
