@@ -1,0 +1,4903 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Java Driver for Apache Cassandra® Documentation">
+      
+      
+      
+        <link rel="canonical" href="https://apache.github.io/cassandra-java-driver/4.19.3/CONTRIBUTING/">
+      
+      
+        <link rel="prev" href="../upgrade_guide/">
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../faq/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>Contribute - Java Driver for Apache Cassandra</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.618322db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#contributing-guidelines" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Java Driver for Apache Cassandra" class="md-header__button md-logo" aria-label="Java Driver for Apache Cassandra" data-md-component="logo">
+      
+  <img src="../faq/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Java Driver for Apache Cassandra
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Contribute
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/apache/cassandra-java-driver" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    apache/cassandra-java-driver
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../manual/" class="md-tabs__link">
+          
+  
+  
+  Manual
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../api/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  API References
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../faq/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  FAQ
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../changelog/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Changelog
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../upgrade_guide/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Upgrade Guide
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Contribute
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Java Driver for Apache Cassandra" class="md-nav__button md-logo" aria-label="Java Driver for Apache Cassandra" data-md-component="logo">
+      
+  <img src="../faq/logo.png" alt="logo">
+
+    </a>
+    Java Driver for Apache Cassandra
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/apache/cassandra-java-driver" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    apache/cassandra-java-driver
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Manual
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Manual
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/api_conventions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Conventions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/case_sensitivity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Case Sensitivity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/cloud/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cloud
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_5" id="__nav_2_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Core
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_5_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_5_3" id="__nav_2_5_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_5_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_5_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Configuration
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/configuration/reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/authentication/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authentication
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/ssl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SSL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/load_balancing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Load Balancing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/pooling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pooling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/reconnection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reconnection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/retries/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Retries
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/speculative_execution/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Speculative Execution
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/metrics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metrics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/logging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Logging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_5_13" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_5_13" id="__nav_2_5_13_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Statements
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_5_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_5_13">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Statements
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/statements/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/statements/batch/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Batch
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/statements/per_query_keyspace/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Per Query Keyspace
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/statements/prepared/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prepared
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/statements/simple/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Simple
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/paging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Paging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/async/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Async Programming
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/reactive/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reactive Streams
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/custom_codecs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Custom Codecs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/temporal_types/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Temporal Types
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/tuples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tuples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/udts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    UDTs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/compression/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Compression
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/address_resolution/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Address Resolution
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/request_tracker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Request Tracker
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/request_id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Request ID
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/throttling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Throttling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/tracing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tracing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/performance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Performance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_5_28" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_5_28" id="__nav_2_5_28_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metadata
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_5_28_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_5_28">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Metadata
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/metadata/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/metadata/node/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Node
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/metadata/schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Schema
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/metadata/token/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Token
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/control_connection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Control Connection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/native_protocol/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Native Protocol
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/non_blocking/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Non-blocking
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/query_timestamps/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Query Timestamps
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/idempotence/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Idempotence
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/detachable_types/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Detachable Types
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_5_35" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_5_35" id="__nav_2_5_35_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DSE
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_5_35_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_5_35">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    DSE
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/dse/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/dse/geotypes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Geotypes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_5_35_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_5_35_3" id="__nav_2_5_35_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Graph
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_5_35_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_5_35_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Graph
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/dse/graph/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_5_35_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_5_35_3_2" id="__nav_2_5_35_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fluent
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_2_5_35_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_5_35_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Fluent
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/dse/graph/fluent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/dse/graph/fluent/explicit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Explicit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/dse/graph/fluent/implicit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Implicit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/dse/graph/options/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Options
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/dse/graph/results/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Results
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/dse/graph/script/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Script
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/graalvm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GraalVM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/shaded_jar/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shaded JAR
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/core/bom/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    BOM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_6" id="__nav_2_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Query Builder
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Query Builder
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/query_builder/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/query_builder/select/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Select
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/query_builder/insert/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Insert
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/query_builder/update/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Update
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/query_builder/delete/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Delete
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_6_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_6_6" id="__nav_2_6_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Schema
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_6_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_6_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Schema
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/query_builder/schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/query_builder/schema/aggregate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Aggregate
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/query_builder/schema/function/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Function
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/query_builder/schema/index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/query_builder/schema/keyspace/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Keyspace
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/query_builder/schema/materialized_view/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Materialized View
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/query_builder/schema/table/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Table
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/query_builder/schema/type/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Type
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/query_builder/truncate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Truncate
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/query_builder/condition/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Condition
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/query_builder/relation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Relation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/query_builder/term/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Term
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/query_builder/idempotence/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Idempotence
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_7" id="__nav_2_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mapper
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Mapper
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/mapper/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/mapper/entities/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Entities
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_7_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_7_3" id="__nav_2_7_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DAOs
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_7_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_7_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    DAOs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/mapper/daos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/mapper/daos/custom_types/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Custom Types
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/mapper/daos/delete/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Delete
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/mapper/daos/getentity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Get Entity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/mapper/daos/increment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Increment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/mapper/daos/insert/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Insert
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/mapper/daos/null_saving/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Null Saving
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/mapper/daos/query/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Query
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/mapper/daos/queryprovider/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Query Provider
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/mapper/daos/select/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Select
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/mapper/daos/setentity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Set Entity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/mapper/daos/statement_attributes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Statement Attributes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/mapper/daos/update/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Update
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/mapper/mapper/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mapper
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_7_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_7_5" id="__nav_2_7_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_7_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_7_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Configuration
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/mapper/config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/mapper/config/kotlin/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kotlin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/mapper/config/lombok/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lombok
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/mapper/config/record/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Record
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/mapper/config/scala/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scala
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_8" id="__nav_2_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developer
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Developer
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/developer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_8_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_8_2" id="__nav_2_8_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_8_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_8_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Common
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/developer/common/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/developer/common/concurrency/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concurrency
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/developer/common/context/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Context
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/developer/common/event_bus/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Bus
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/developer/native_protocol/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Native Protocol
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/developer/netty_pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Netty Pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/developer/request_execution/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Request Execution
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/developer/admin/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Admin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual/osgi/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OSGi
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../faq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FAQ
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../upgrade_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Upgrade Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contribute
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<h1 id="contributing-guidelines">Contributing guidelines<a class="headerlink" href="#contributing-guidelines" title="Permanent link">&para;</a></h1>
+<h2 id="code-formatting">Code formatting<a class="headerlink" href="#code-formatting" title="Permanent link">&para;</a></h2>
+<h3 id="java">Java<a class="headerlink" href="#java" title="Permanent link">&para;</a></h3>
+<p>We follow the <a href="https://google.github.io/styleguide/javaguide.html">Google Java Style Guide</a>. See
+https://github.com/google/google-java-format for IDE plugins. The rules are not configurable.</p>
+<p>The build will fail if the code is not formatted. To format all files from the command line, run:</p>
+<div class="highlight"><pre><span></span><code>mvn fmt:format
+</code></pre></div>
+<p>Some aspects are not covered by the formatter: braces must be used with <code>if</code>, <code>else</code>, <code>for</code>, <code>do</code>
+and <code>while</code> statements, even when the body is empty or contains only a single statement.</p>
+<h3 id="xml">XML<a class="headerlink" href="#xml" title="Permanent link">&para;</a></h3>
+<p>The build will fail if XML files are not formatted correctly. Run the following command before you
+commit:</p>
+<div class="highlight"><pre><span></span><code><span class="n">mvn</span><span class="w"> </span><span class="n">xml</span><span class="o">-</span><span class="n">format</span><span class="p">:</span><span class="n">xml</span><span class="o">-</span><span class="n">format</span>
+</code></pre></div>
+<p>The formatter does not enforce a maximum line length, but please try to keep it below 100 characters
+to keep files readable across all mediums (IDE, terminal, Github...).</p>
+<h3 id="other-text-files-markdown-etc">Other text files (markdown, etc)<a class="headerlink" href="#other-text-files-markdown-etc" title="Permanent link">&para;</a></h3>
+<p>Similarly, enforce a right margin of 100 characters in those files. Editors and IDEs generally have
+a way to configure this (for IDEA, install the "Wrap to column" plugin).</p>
+<h2 id="coding-style-production-code">Coding style -- production code<a class="headerlink" href="#coding-style-production-code" title="Permanent link">&para;</a></h2>
+<p>Do not use static imports. They make things harder to understand when you look at the code 
+someplace where you don't have IDE support, like Github's code view.</p>
+<p>Avoid abbreviations in class and variable names. A good rule of thumb is that you should only use
+them if you would also do so verbally, for example "id" and "config" are probably reasonable.
+Single-letter variables are permissible if the variable scope is only a few lines, or for commonly
+understood cases (like <code>i</code> for a loop index).</p>
+<p>Keep source files short. Short files are easy to understand and test. The average should probably 
+be around 200-300 lines. </p>
+<h3 id="javadoc">Javadoc<a class="headerlink" href="#javadoc" title="Permanent link">&para;</a></h3>
+<p>All types in "API" packages must be documented. For "internal" packages, documentation is optional,
+but in no way discouraged: it's generally a good idea to have a class-level comment that explains
+where the component fits in the architecture, and anything else that you feel is important.</p>
+<p>You don't need to document every parameter or return type, or even every method. Don't document 
+something if it is completely obvious, we don't want to end up with this:</p>
+<div class="highlight"><pre><span></span><code><span class="cm">/**</span>
+<span class="cm"> * Returns the name.</span>
+<span class="cm"> * </span>
+<span class="cm"> * @return the name</span>
+<span class="cm"> */</span>
+<span class="n">String</span><span class="w"> </span><span class="nf">getName</span><span class="p">();</span>
+</code></pre></div>
+<p>On the other hand, there is often something useful to say about a method, so most should have at
+least a one-line comment. Use common sense.</p>
+<p>Driver users coding in their IDE should find the right documentation at the right time. Try to 
+think of how they will come into contact with the class. For example, if a type is constructed with
+a builder, each builder method should probably explain what the default is when you don't call it.</p>
+<p>Avoid using too many links, they can make comments harder to read, especially in the IDE. Link to a
+type the first time it's mentioned, then use a text description ("this registry"...) or an <code>@code</code>
+block. Don't link to a class in its own documentation. Don't link to types that appear right below
+in the documented item's signature.</p>
+<div class="highlight"><pre><span></span><code><span class="cm">/**</span>
+<span class="cm">* @return this {@link Builder} &lt;-- completely unnecessary</span>
+<span class="cm">*/</span>
+<span class="n">Builder</span><span class="w"> </span><span class="nf">withLimit</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">limit</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</code></pre></div>
+<h3 id="logs">Logs<a class="headerlink" href="#logs" title="Permanent link">&para;</a></h3>
+<p>We use SLF4J; loggers are declared like this:</p>
+<div class="highlight"><pre><span></span><code><span class="kd">private</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">Logger</span><span class="w"> </span><span class="n">LOG</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LoggerFactory</span><span class="p">.</span><span class="na">getLogger</span><span class="p">(</span><span class="n">TheEnclosingClass</span><span class="p">.</span><span class="na">class</span><span class="p">);</span>
+</code></pre></div>
+<p>Logs are intended for two personae:</p>
+<ul>
+<li>Ops who manage the application in production.</li>
+<li>Developers (maybe you) who debug a particular issue.</li>
+</ul>
+<p>The first 3 log levels are for ops:</p>
+<ul>
+<li><code>ERROR</code>: something that renders the driver -- or a part of it -- completely unusable. An action is
+  required to fix it: bouncing the client, applying a patch, etc.</li>
+<li><code>WARN</code>: something that the driver can recover from automatically, but indicates a configuration or
+  programming error that should be addressed. For example: the driver connected successfully, but 
+  one of the contact points in the configuration was malformed; the same prepared statement is being
+  prepared multiple time by the application code.</li>
+<li><code>INFO</code>: something that is part of the normal operation of the driver, but might be useful to know
+  for an operator. For example: the driver has initialized successfully and is ready to process
+  queries; an optional dependency was detected in the classpath and activated an enhanced feature.</li>
+</ul>
+<p>Do not log errors that are rethrown to the client (such as the error that you're going to complete a
+request with). This is annoying for ops because they see a lot of stack traces that require no
+actual action on their part, because they're already handled by application code.</p>
+<p>Similarly, do not log stack traces for non-critical errors. If you still want the option to get the
+trace for debugging, see the <code>Loggers.warnWithException</code> utility. </p>
+<p>The last 2 levels are for developers, to help follow what the driver is doing from a "black box"
+perspective (think about debugging an issue remotely, and all you have are the logs).</p>
+<ul>
+<li><code>TRACE</code>: anything that happens <strong>for every user request</strong>. Not only request handling, but all
+  related components (e.g. timestamp generators, policies, etc).</li>
+<li><code>DEBUG</code>: everything else. For example, node state changes, control connection activity, etc. </li>
+</ul>
+<p>Note that <code>DEBUG</code> and <code>TRACE</code> can coexist within the same component, for example the LBP
+initializing is a one-time event, but returning a query plan is a per-request event.</p>
+<p>Logs statements start with a prefix that identifies its origin, for example:</p>
+<ul>
+<li>for components that are unique to the cluster instance, just the cluster name: <code>[c0]</code>.</li>
+<li>for sessions, the cluster name + a generated unique identifier: <code>[c0|s0]</code>.</li>
+<li>for channel pools, the session identifier + the address of the node: <code>[c0|s0|/127.0.0.2:9042]</code>.</li>
+<li>for channels, the identifier of the owner (session or control connection) + the Netty identifier,
+  which indicates the local and remote ports:
+  <code>[c0|s0|id: 0xf9ef0b15, L:/127.0.0.1:51482 - R:/127.0.0.1:9042]</code>.</li>
+<li>for request handlers, the session identifier, a unique identifier, and the index of the 
+  speculative execution: <code>[c0|s0|1077199500|0]</code>.</li>
+</ul>
+<p>Tests run with the configuration defined in <code>src/test/resources/logback-test.xml</code>. The default level
+for driver classes is <code>WARN</code>, but you can override it with a system property: <code>-DdriverLevel=DEBUG</code>.
+A nice setup is to use <code>DEBUG</code> when you run from your IDE, and keep the default for the command
+line.</p>
+<p>When you add or review new code, take a moment to run the tests in <code>DEBUG</code> mode and check if the
+output looks good.</p>
+<h3 id="dont-abuse-the-stream-api">Don't abuse the stream API<a class="headerlink" href="#dont-abuse-the-stream-api" title="Permanent link">&para;</a></h3>
+<p>The <code>java.util.stream</code> API is often used (abused?) as a "functional API for collections":</p>
+<div class="highlight"><pre><span></span><code><span class="n">List</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span><span class="w"> </span><span class="n">sizes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">words</span><span class="p">.</span><span class="na">stream</span><span class="p">().</span><span class="na">map</span><span class="p">(</span><span class="n">String</span><span class="p">::</span><span class="n">length</span><span class="p">).</span><span class="na">collect</span><span class="p">(</span><span class="n">Collectors</span><span class="p">.</span><span class="na">toList</span><span class="p">());</span>
+</code></pre></div>
+<p>The perceived advantages of this approach over traditional for-loops are debatable:</p>
+<ul>
+<li>readability: this is highly subjective. But consider the following:</li>
+<li>everyone can read for-loops, whether they are familiar with the Stream API or not. The opposite
+    is not true.</li>
+<li>the stream API does not spell out all the details: what kind of list does <code>Collectors.toList()</code>
+    return? Is it pre-sized? Mutable? Thread-safe?</li>
+<li>the stream API looks pretty on simple examples, but things can get ugly fast. Try rewriting
+    <code>NetworkTopologyReplicationStrategy</code> with streams.</li>
+<li>concision: this is irrelevant. When we look at code we care about maintainability, not how many
+  keystrokes the author saved. The for-loop version of the above example is just 5 lines long, and
+  your brain doesn't take longer to parse it.</li>
+</ul>
+<p>The bottom line: don't try to "be functional" at all cost. Plain old for-loops are often just as
+simple.</p>
+<h3 id="never-assume-a-specific-format-for-tostring">Never assume a specific format for <code>toString()</code><a class="headerlink" href="#never-assume-a-specific-format-for-tostring" title="Permanent link">&para;</a></h3>
+<p>Only use <code>toString()</code> for debug logs or exception messages, and always assume that its format is
+unspecified and can change at any time.</p>
+<p>If you need a specific string representation for a class, make it a dedicated method with a
+documented format, for example <code>toCqlLiteral</code>. Otherwise it's too easy to lose track of the intended
+usage and break things: for example, someone modifies your <code>toString()</code> method to make their logs
+prettier, but unintentionally breaks the script export feature that expected it to produce CQL
+literals.</p>
+<p><code>toString()</code> can delegate to <code>toCqlLiteral()</code> if that is appropriate for logs. </p>
+<h3 id="concurrency-annotations">Concurrency annotations<a class="headerlink" href="#concurrency-annotations" title="Permanent link">&para;</a></h3>
+<p>We use the <a href="http://jcip.net/annotations/doc/index.html">JCIP annotations</a> to document thread-safety
+policies.</p>
+<p>Add them for all new code, with the exception of:</p>
+<ul>
+<li>enums and interfaces;</li>
+<li>utility classes (only static methods);</li>
+<li>test code.</li>
+</ul>
+<p>Make sure you import the types from <code>net.jcip</code>, there are homonyms in the classpath.</p>
+<h3 id="nullability-annotations">Nullability annotations<a class="headerlink" href="#nullability-annotations" title="Permanent link">&para;</a></h3>
+<p>We use the <a href="https://spotbugs.github.io">Spotbugs annotations</a> to document nullability of parameters,
+method return types and class members.</p>
+<p>Please annotate any new class or interface with the appropriate annotations: <code>@NonNull</code>, <code>@Nullable</code>. Make sure you import 
+the types from <code>edu.umd.cs.findbugs.annotations</code>, there are homonyms in the classpath.</p>
+<h2 id="coding-style-test-code">Coding style -- test code<a class="headerlink" href="#coding-style-test-code" title="Permanent link">&para;</a></h2>
+<p>Static imports are permitted in a couple of places:
+* All AssertJ methods, e.g.:
+  <div class="highlight"><pre><span></span><code><span class="n">assertThat</span><span class="p">(</span><span class="n">node</span><span class="p">.</span><span class="na">getDatacenter</span><span class="p">()).</span><span class="na">isNotNull</span><span class="p">();</span>
+<span class="n">fail</span><span class="p">(</span><span class="s">&quot;Expecting IllegalStateException to be thrown&quot;</span><span class="p">);</span>
+</code></pre></div>
+* All Mockito methods, e.g.:
+  <div class="highlight"><pre><span></span><code><span class="n">when</span><span class="p">(</span><span class="n">codecRegistry</span><span class="p">.</span><span class="na">codecFor</span><span class="p">(</span><span class="n">DataTypes</span><span class="p">.</span><span class="na">INT</span><span class="p">)).</span><span class="na">thenReturn</span><span class="p">(</span><span class="n">codec</span><span class="p">);</span>
+<span class="n">verify</span><span class="p">(</span><span class="n">codec</span><span class="p">).</span><span class="na">decodePrimitive</span><span class="p">(</span><span class="n">any</span><span class="p">(</span><span class="n">ByteBuffer</span><span class="p">.</span><span class="na">class</span><span class="p">),</span><span class="w"> </span><span class="n">eq</span><span class="p">(</span><span class="n">ProtocolVersion</span><span class="p">.</span><span class="na">DEFAULT</span><span class="p">));</span>
+</code></pre></div>
+* All Awaitility methods, e.g.:
+  <div class="highlight"><pre><span></span><code><span class="n">await</span><span class="p">().</span><span class="na">until</span><span class="p">(()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">somethingBecomesTrue</span><span class="p">());</span>
+</code></pre></div></p>
+<p>Test methods names use lower snake case, generally start with <code>should</code>, and clearly indicate the
+purpose of the test, for example: <code>should_fail_if_key_already_exists</code>. If you have trouble coming 
+up with a simple name, it might be a sign that your test does too much, and should be split.</p>
+<p>We use AssertJ (<code>assertThat</code>) for assertions. Don't use JUnit assertions (<code>assertEquals</code>, 
+<code>assertNull</code>, etc).</p>
+<p>Don't try to generify at all cost: a bit of duplication is acceptable, if that helps keep the tests
+simple to understand (a newcomer should be able to understand how to fix a failing test without
+having to read too much code).</p>
+<p>Test classes can be a bit longer, since they often enumerate similar test cases. You can also
+factor some common code in a parent abstract class named with "XxxTestBase", and then split
+different families of tests into separate child classes. For example, <code>CqlRequestHandlerTestBase</code>,
+<code>CqlRequestHandlerRetryTest</code>, <code>CqlRequestHandlerSpeculativeExecutionTest</code>...</p>
+<h3 id="unit-tests">Unit tests<a class="headerlink" href="#unit-tests" title="Permanent link">&para;</a></h3>
+<p>They live in the same module as the code they are testing. They should be fast and not start any
+external process. They usually target one specific component and mock the rest of the driver
+context.</p>
+<h3 id="integration-tests">Integration tests<a class="headerlink" href="#integration-tests" title="Permanent link">&para;</a></h3>
+<p>They live in the <code>integration-tests</code> module, and exercise the whole driver stack against an external
+process, which can be either one of:
+* <a href="https://github.com/datastax/simulacron">Simulacron</a>: simulates Cassandra nodes on loopback
+  addresses; your test must "prime" data, i.e. tell the nodes what results to return for
+  pre-determined queries.</p>
+<div class="codehilite"><pre><span></span><code><span class="k">For</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">example</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">Simulacron</span><span class="o">-</span><span class="n">based</span><span class="w"> </span><span class="n">test</span><span class="p">,</span><span class="w"> </span><span class="n">see</span><span class="w"> </span><span class="n n-Quoted">`NodeTargetingIT`</span><span class="p">.</span>
+</code></pre></div>
+
+<ul>
+<li>
+<p><a href="https://github.com/pcmanus/ccm">CCM</a>: launches actual Cassandra nodes locally. The <code>ccm</code>
+  executable must be in the path.</p>
+<p>You can pass a <code>-Dccm.version</code> system property to the build to target a particular Cassandra
+version (it defaults to 3.11.0). <code>-Dccm.directory</code> allows you to point to a local installation
+-- this can be a checkout of the Cassandra codebase, as long as it's built. See <code>CcmBridge</code> in
+the driver codebase for more details.</p>
+<p>For an example of a CCM-based test, see <code>PlainTextAuthProviderIT</code>.</p>
+</li>
+</ul>
+<h4 id="categories">Categories<a class="headerlink" href="#categories" title="Permanent link">&para;</a></h4>
+<p>Integration tests are divided into three categories:</p>
+<h5 id="parallelizable-tests">Parallelizable tests<a class="headerlink" href="#parallelizable-tests" title="Permanent link">&para;</a></h5>
+<p>These tests can be run in parallel, to speed up the build. They either use:
+* dedicated Simulacron instances. These are lightweight, and Simulacron will manage the ports to
+  make sure that there are no collisions.
+* a shared, one-node CCM cluster. Each test works in its own keyspace.</p>
+<p>The build runs them with a configurable degree of parallelism (currently 8). The shared CCM cluster
+is initialized the first time it's used, and stopped before moving on to serial tests. Note that we
+run with <code>parallel=classes</code>, which means methods within the same class never run concurrent to each
+other.</p>
+<p>To make an integration test parallelizable, annotate it with <code>@Category(ParallelizableTests.class)</code>.
+If you use CCM, it <strong>must</strong> be with <code>CcmRule</code>.</p>
+<p>For an example of a Simulacron-based parallelizable test, see <code>NodeTargetingIT</code>. For a CCM-based
+test, see <code>DirectCompressionIT</code>.</p>
+<h5 id="serial-tests">Serial tests<a class="headerlink" href="#serial-tests" title="Permanent link">&para;</a></h5>
+<p>These tests cannot run in parallel, in general because they require CCM clusters of different sizes,
+or with a specific configuration (we never run more than one CCM cluster simultaneously: it would be
+too resource-intensive, and too complicated to manage all the ports).</p>
+<p>The build runs them one by one, after the parallelizable tests.</p>
+<p>To make an integration test serial, do not annotate it with <code>@Category</code>. The CCM rule <strong>must</strong> be
+<code>CustomCcmRule</code>.</p>
+<p>For an example, see <code>DefaultLoadBalancingPolicyIT</code>.</p>
+<p>Note: if multiple serial tests have a common "base" class, do not pull up <code>CustomCcmRule</code>, each
+child class must have its own instance. Otherwise they share the same CCM instance, and the first
+one destroys it on teardown. See <code>TokenITBase</code> for how to organize code in those cases.</p>
+<h5 id="isolated-tests">Isolated tests<a class="headerlink" href="#isolated-tests" title="Permanent link">&para;</a></h5>
+<p>Not only can those tests not run in parallel, they also require specific environment tweaks,
+typically system properties that need to be set before initialization.</p>
+<p>The build runs them one by one, <em>each in its own JVM fork</em>, after the serial tests.</p>
+<p>To isolate an integration test, annotate it with <code>@Category(IsolatedTests.class)</code>. The CCM rule
+<strong>must</strong> be <code>CustomCcmRule</code>.  </p>
+<p>For an example, see <code>HeapCompressionIT</code>.</p>
+<h4 id="about-test-rules">About test rules<a class="headerlink" href="#about-test-rules" title="Permanent link">&para;</a></h4>
+<p>Do not mix <code>CcmRule</code> and <code>SimulacronRule</code> in the same test. It makes things harder to follow, and
+can be inefficient (if the <code>SimulacronRule</code> is method-level, it will create a Simulacron cluster for
+every test method, even those that only need CCM).</p>
+<h5 id="class-level-rules">Class-level rules<a class="headerlink" href="#class-level-rules" title="Permanent link">&para;</a></h5>
+<p>Rules annotated with <code>@ClassRule</code> wrap the whole test class, and are reused across methods. Try to
+use this as much as possible, as it's more efficient. The fields need to be static; also make them
+final and use constant naming conventions, like <code>CCM_RULE</code>.</p>
+<p>When you use a server rule (<code>CcmRule</code> or <code>SimulacronRule</code>) and a <code>SessionRule</code> at the same level,
+wrap them into a rule chain to ensure proper initialization order:</p>
+<div class="highlight"><pre><span></span><code><span class="kd">private</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">CcmRule</span><span class="w"> </span><span class="n">CCM_RULE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CcmRule</span><span class="p">.</span><span class="na">getInstance</span><span class="p">();</span>
+<span class="kd">private</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">SessionRule</span><span class="o">&lt;</span><span class="n">CqlSession</span><span class="o">&gt;</span><span class="w"> </span><span class="n">SESSION_RULE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SessionRule</span><span class="p">.</span><span class="na">builder</span><span class="p">(</span><span class="n">CCM_RULE</span><span class="p">).</span><span class="na">build</span><span class="p">();</span>
+
+<span class="nd">@ClassRule</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">TestRule</span><span class="w"> </span><span class="n">CHAIN</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">RuleChain</span><span class="p">.</span><span class="na">outerRule</span><span class="p">(</span><span class="n">CCM_RULE</span><span class="p">).</span><span class="na">around</span><span class="p">(</span><span class="n">SESSION_RULE</span><span class="p">);</span>
+</code></pre></div>
+<h5 id="method-level-rules">Method-level rules<a class="headerlink" href="#method-level-rules" title="Permanent link">&para;</a></h5>
+<p>Rules annotated with <code>@Rule</code> wrap each test method. Use lower-camel case for field names:</p>
+<div class="highlight"><pre><span></span><code><span class="kd">private</span><span class="w"> </span><span class="n">CcmRule</span><span class="w"> </span><span class="n">ccmRule</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CcmRule</span><span class="p">.</span><span class="na">getInstance</span><span class="p">();</span>
+<span class="kd">private</span><span class="w"> </span><span class="n">SessionRule</span><span class="o">&lt;</span><span class="n">CqlSession</span><span class="o">&gt;</span><span class="w"> </span><span class="n">sessionRule</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SessionRule</span><span class="p">.</span><span class="na">builder</span><span class="p">(</span><span class="n">ccmRule</span><span class="p">).</span><span class="na">build</span><span class="p">();</span>
+
+<span class="nd">@ClassRule</span>
+<span class="kd">public</span><span class="w"> </span><span class="n">TestRule</span><span class="w"> </span><span class="n">chain</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">RuleChain</span><span class="p">.</span><span class="na">outerRule</span><span class="p">(</span><span class="n">ccmRule</span><span class="p">).</span><span class="na">around</span><span class="p">(</span><span class="n">sessionRule</span><span class="p">);</span>
+</code></pre></div>
+<p>Only use this for:</p>
+<ul>
+<li>CCM tests that use <code>@CassandraRequirement</code> or <code>@DseRequirement</code> restrictions at the method level
+  (ex: <code>BatchStatementIT</code>).</li>
+<li>tests where you <em>really</em> need to restart from a clean state for every method.</li>
+</ul>
+<h5 id="mixed">Mixed<a class="headerlink" href="#mixed" title="Permanent link">&para;</a></h5>
+<p>It's also possible to use a <code>@ClassRule</code> for CCM / Simulacron, and a <code>@Rule</code> for the session rule.
+In that case, you don't need to use a rule chain.</p>
+<h2 id="running-the-tests">Running the tests<a class="headerlink" href="#running-the-tests" title="Permanent link">&para;</a></h2>
+<h3 id="unit-tests_1">Unit tests<a class="headerlink" href="#unit-tests_1" title="Permanent link">&para;</a></h3>
+<div class="codehilite"><pre><span></span><code>mvn clean test
+</code></pre></div>
+
+<p>This currently takes about 30 seconds. The goal is to keep it within a couple of minutes (it runs
+for each commit if you enable the pre-commit hook -- see below).</p>
+<h3 id="integration-tests_1">Integration tests<a class="headerlink" href="#integration-tests_1" title="Permanent link">&para;</a></h3>
+<div class="codehilite"><pre><span></span><code>mvn clean verify
+</code></pre></div>
+
+<p>This currently takes about 9 minutes. We don't have a hard limit, but ideally it should stay within
+30 minutes to 1 hour.</p>
+<p>You can skip test categories individually with <code>-DskipParallelizableITs</code>, <code>-DskipSerialITs</code> and
+<code>-DskipIsolatedITs</code> (<code>-DskipITs</code> still works to skip them all at once).</p>
+<h3 id="configuring-macos-for-simulacron">Configuring MacOS for Simulacron<a class="headerlink" href="#configuring-macos-for-simulacron" title="Permanent link">&para;</a></h3>
+<p>Simulacron (used in integration tests) relies on loopback aliases to simulate multiple nodes. On
+Linux or Windows, you shouldn't have anything to do. On MacOS, run this script:</p>
+<div class="highlight"><pre><span></span><code>#!/bin/bash
+for sub in {0..4}; do
+    echo &quot;Opening for 127.0.$sub&quot;
+    for i in {0..255}; do sudo ifconfig lo0 alias 127.0.$sub.$i up; done
+done
+</code></pre></div>
+<p>Note that this is known to cause temporary increased CPU usage in OS X initially while mDNSResponder
+acclimates itself to the presence of added IP addresses. This lasts several minutes. Also, this does
+not survive reboots.</p>
+<h2 id="license-headers">License headers<a class="headerlink" href="#license-headers" title="Permanent link">&para;</a></h2>
+<p>The build will fail if some license headers are missing. To update all files from the command line,
+run:</p>
+<div class="highlight"><pre><span></span><code>mvn license:format
+</code></pre></div>
+<h2 id="pre-commit-hook-highly-recommended">Pre-commit hook (highly recommended)<a class="headerlink" href="#pre-commit-hook-highly-recommended" title="Permanent link">&para;</a></h2>
+<p>Ensure <code>pre-commit.sh</code> is executable, then run:</p>
+<div class="highlight"><pre><span></span><code>ln -s ../../pre-commit.sh .git/hooks/pre-commit
+</code></pre></div>
+<p>This will only allow commits if the tests pass. It is also a good reminder to keep the test suite
+short.</p>
+<p>Note: the tests run on the current state of the working directory. I tried to add a <code>git stash</code> in
+the script to only test what's actually being committed, but I couldn't get it to run reliably
+(it's still in there but commented). Keep this in mind when you commit, and don't forget to re-add
+the changes if the first attempt failed and you fixed the tests.</p>
+<h2 id="speeding-up-the-build-for-local-tests">Speeding up the build for local tests<a class="headerlink" href="#speeding-up-the-build-for-local-tests" title="Permanent link">&para;</a></h2>
+<p>If you need to install something in your local repository quickly, you can use the <code>fast</code> profile to
+skip all "non-essential" checks (licenses, formatting, tests, etc):</p>
+<div class="highlight"><pre><span></span><code>mvn clean install -Pfast
+</code></pre></div>
+<p>You can speed things up even more by targeting specific modules with the <code>-pl</code> option:</p>
+<div class="highlight"><pre><span></span><code>mvn clean install -Pfast -pl core,query-builder,mapper-runtime,mapper-processor,bom
+</code></pre></div>
+<p>Please run the normal build at least once before you push your changes.</p>
+<h2 id="commits">Commits<a class="headerlink" href="#commits" title="Permanent link">&para;</a></h2>
+<p>Keep your changes <strong>focused</strong>. Each commit should have a single, clear purpose expressed in its 
+message.</p>
+<p>Resist the urge to "fix" cosmetic issues (add/remove blank lines, move methods, etc.) in existing
+code. This adds cognitive load for reviewers, who have to figure out which changes are relevant to
+the actual issue. If you see legitimate issues, like typos, address them in a separate commit (it's
+fine to group multiple typo fixes in a single commit).</p>
+<p>Isolate trivial refactorings into separate commits. For example, a method rename that affects dozens
+of call sites can be reviewed in a few seconds, but if it's part of a larger diff it gets mixed up
+with more complex changes (that might affect the same lines), and reviewers have to check every
+line.</p>
+<p>Commit message subjects start with a capital letter, use the imperative form and do <strong>not</strong> end
+with a period:</p>
+<ul>
+<li>correct: "Add test for CQL request handler"</li>
+<li>incorrect: "~~Added test for CQL request handler~~"</li>
+<li>incorrect: "~~New test for CQL request handler~~"</li>
+</ul>
+<p>Avoid catch-all messages like "Minor cleanup", "Various fixes", etc. They don't provide any useful
+information to reviewers, and might be a sign that your commit contains unrelated changes.</p>
+<p>We don't enforce a particular subject line length limit, but try to keep it short.</p>
+<p>You can add more details after the subject line, separated by a blank line. The following pattern
+(inspired by <a href="http://netty.io/wiki/writing-a-commit-message.html">Netty</a>) is not mandatory, but
+welcome for complex changes:</p>
+<div class="highlight"><pre><span></span><code>One line description of your change
+
+Motivation:
+
+Explain here the context, and why you&#39;re making that change.
+What is the problem you&#39;re trying to solve.
+
+Modifications:
+
+Describe the modifications you&#39;ve done.
+
+Result:
+
+After your change, what will change.
+</code></pre></div>
+<h2 id="pull-requests">Pull requests<a class="headerlink" href="#pull-requests" title="Permanent link">&para;</a></h2>
+<p>Like commits, pull requests should be focused on a single, clearly stated goal.</p>
+<p>Don't base a pull request onto another one, it's too complicated to follow two branches that evolve
+at the same time. If a ticket depends on another, wait for the first one to be merged. </p>
+<p>If you have to address feedback, avoid rewriting the history (e.g. squashing or amending commits):
+this makes the reviewers' job harder, because they have to re-read the full diff and figure out
+where your new changes are. Instead, push a new commit on top of the existing history; it will be
+squashed later when the PR gets merged. If the history is complex, it's a good idea to indicate in
+the message where the changes should be squashed:</p>
+<div class="highlight"><pre><span></span><code>* 20c88f4 - Address feedback (to squash with &quot;Add metadata parsing logic&quot;) (36 minutes ago)
+* 7044739 - Fix various typos in Javadocs (2 days ago)
+* 574dd08 - Add metadata parsing logic (2 days ago)
+</code></pre></div>
+<p>(Note that the message refers to the other commit's subject line, not the SHA-1. This way it's still
+relevant if there are intermediary rebases.)</p>
+<p>If you need new stuff from the base branch, it's fine to rebase and force-push, as long as you don't
+rewrite the history. Just give a heads up to the reviewers beforehand. Don't push a merge commit to
+a pull request.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.top", "navigation.path", "search.highlight", "search.share"], "search": "../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+    
+  </body>
+</html>
