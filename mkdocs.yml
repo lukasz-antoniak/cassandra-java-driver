@@ -9,14 +9,12 @@ site_dir: docs
 
 theme:
   name: material
-  palette:
-    - scheme: default
-      primary: blue
-      accent: blue
+  logo: faq/logo.png
+  favicon: faq/favicon.ico
   features:
     - navigation.tabs
-    - navigation.sections
     - navigation.top
+    - navigation.path
     - search.highlight
     - search.share
 
@@ -26,6 +24,7 @@ markdown_extensions:
   - pymdownx.superfences
   - pymdownx.tabbed
   - toc:
+      toc_depth: 1
       permalink: true
 
 nav:
@@ -39,8 +38,8 @@ nav:
       - Overview: manual/core/README.md
       - Integration: manual/core/integration/README.md
       - Configuration:
-          - Overview: manual/core/configuration/README.md
-          - Reference: manual/core/configuration/reference/README.md
+        - Overview: manual/core/configuration/README.md
+        - Reference: manual/core/configuration/reference/README.md
       - Authentication: manual/core/authentication/README.md
       - SSL: manual/core/ssl/README.md
       - Load Balancing: manual/core/load_balancing/README.md
@@ -162,3 +161,10 @@ plugins:
   - search
   - awesome-pages
   - macros
+  - mike:
+      alias_type: copy
+
+extra:
+  generator: false
+  version:
+    provider: mike
