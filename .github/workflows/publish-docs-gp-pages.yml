@@ -47,15 +47,15 @@ jobs:
           chmod +x ./build-doc.sh
           ./build-doc.sh
 
-      # 5. Checkout doc-view branch
+      # 5. Checkout gh-pages branch
       - name: Checkout GH pages branch
         uses: actions/checkout@v4
         with:
-          ref: doc-view
-          path: doc-view
+          ref: gh-pages
+          path: gh-pages
 
       - name: Copy and version documentation
-        working-directory: doc-view
+        working-directory: gh-pages
         run: |
           git config --global user.email "gha@cassandra.apache.org"
           git config --global user.name "GHA for Apache Cassandra Website"
@@ -66,7 +66,7 @@ jobs:
           # update links to contain version prefix
           mike deploy --update-aliases $release_version
           # copy documentation web page folder
-          cd ../doc-view
+          cd ../gh-pages
           cp -r ../java-driver/docs ./
           rm -rf $release_version
           mv docs $release_version
@@ -85,7 +85,7 @@ jobs:
           echo "release_version=$release_version" >> "$GITHUB_ENV"
 
       - name: Commit and push documentation
-        working-directory: doc-view
+        working-directory: gh-pages
         run: |
           git config --global user.email "gha@cassandra.apache.org"
           git config --global user.name "GHA for Apache Cassandra Website"
@@ -93,9 +93,9 @@ jobs:
           git add .
 
           if git diff --cached --quiet; then
-            echo "No changes to push to doc-view"
+            echo "No changes to push to gh-pages"
             exit 0
           fi
 
           git commit -m "Update generated docs for release ${release_version}"
-          git push origin doc-view
+          git push origin gh-pages
