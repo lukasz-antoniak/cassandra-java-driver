@@ -1,10 +1,6 @@
-name: publish-docs-gp-pages
+name: publish-docs-gh-pages
 
 on:
-# TODO: Can we trigger action manually?
-#  push:
-#    branches:
-#      - 4.x
   workflow_dispatch:
 
 jobs:
